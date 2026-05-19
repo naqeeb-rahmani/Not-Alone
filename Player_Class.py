@@ -10,6 +10,9 @@ class player:
         self.speed = 5
 
         self.jump = False
+
+        self.jump_pressed = False
+
         self.jump_height = 150
         self.jump_speed = 5
         self.jump_start_saved = False

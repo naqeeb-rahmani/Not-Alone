@@ -531,9 +531,18 @@ while game.on == True:
     game.start_time = None
     game.end_time = None
     game.time_running = False
+    
+    #resetting background#
+
+    bg_1 = background(background_png, 0, 0)
+    bg_2 = background(background_png, 1280, 0)
+    bg_3 = background(background_png, 2560, 0)
+    bg_4 = background(background_png, 3840, 0)
 
 
- # resetting buttons #
+    backgrounds = [bg_1, bg_2, bg_3, bg_4]
+
+    # resetting buttons #
 
     for b in buttons:
         b.activated = False
@@ -725,6 +734,10 @@ while game.on == True:
                 if event.key == pygame.K_d: player_1.direction = "Right"
                 if event.key == pygame.K_a: player_1.direction = "Left"
 
+                if event.key == pygame.K_w: 
+                    if player_1.jump_pressed == False:
+                        if player_1.on_something: player_1.jump = True; player_1.jump_pressed = True
+
                 #interact#
                 if event.key == pygame.K_e:
                     for lever in game.levers:
@@ -765,8 +778,7 @@ while game.on == True:
                 #jump
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_w: 
-                    if player_1.on_something: player_1.jump = True #trigger on key release to decrease bugs such as double jumping
-
+                    player_1.jump_pressed = False
 
 
 
@@ -777,6 +789,11 @@ while game.on == True:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT: player_2.direction = "Right"
                 if event.key == pygame.K_LEFT: player_2.direction = "Left"
+
+                if event.key == pygame.K_UP:
+                    if player_2.jump_pressed == False:
+                        if player_2.on_something: player_2.jump = True; player_2.jump_pressed = True
+
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_RIGHT: player_2.direction = None; player_2.last_direction = "Right"
                 if event.key == pygame.K_LEFT: player_2.direction = None; player_2.last_direction = "Left"
@@ -784,7 +801,7 @@ while game.on == True:
                 #jump
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_UP: 
-                    if player_2.on_something: player_2.jump = True
+                    player_2.jump_pressed = False
 
 
 
