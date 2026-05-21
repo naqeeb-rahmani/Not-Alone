@@ -121,6 +121,11 @@ class player:
             if self.jump_start_saved == False:
                 self.jump_start = self.y; self.jump_start_saved = True
 
+            if self.jump_sound_on != True:
+                if self.name == "player_2":
+                    pygame.mixer.Sound.set_volume(self.jump_sound, 0.5)
+                pygame.mixer.Sound.play(self.jump_sound); self.jump_sound_on = True
+
             self.y -= self.jump_speed; self.rect.y = self.y
             
             if (self.jump_start - self.y) > self.jump_height:
@@ -151,6 +156,9 @@ class player:
                     self.y = self.rect.y
                     self.reset_fall_speed = True
 
+        if self.on_something == True:
+            if self.jump_sound_on == True:
+                pygame.mixer.Sound.stop(self.jump_sound); self.jump_sound_on = False
 
     def get_animations(self, animation_name, number_of_frames, direction, animation_sheet):
         if direction == "right": frames_order = "left to right"
