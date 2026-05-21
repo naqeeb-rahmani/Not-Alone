@@ -440,7 +440,7 @@ good_ending_text_1 = text(325, 250, "EXPERIMENT SUCCESFUL", 50, (0,255,0))
 bad_ending_text_1 = text(500, 150, "0x0000009C", 40, (255,0,0))
 bad_ending_text_2 = text(385, 250, "EXPERIMENT FAILED", 50, (255,0,0))
 
-alarm_sound = pygame.mixer.Sound(r"Assets\Audio\freesound_community-emergency-alarm-69780.mp3")
+alarm_sound = pygame.mixer.Sound(r"Assets\Audio\Alarm\freesound_community-emergency-alarm-69780.mp3")
 alarm_on = False
 
 
