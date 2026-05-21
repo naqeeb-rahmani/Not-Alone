@@ -13,7 +13,7 @@ from Background_Class import *
 #screen#
 
 SCREEN_WIDTH = 1280
-MAP_WIDTH = 3000 #actually 5000 but the game logic is based on 3000, but i added 2000 in the functions were it is used so it checks the whole map
+MAP_WIDTH = 3000 #actually 5000 but the game logic is based on 3000 so i added 2000 in the functions were it is used so it checks the whole map
 SCREEN_HEIGHT = 720
 
 clock = pygame.time.Clock()
@@ -332,6 +332,8 @@ def camera(player_1, player_2, platforms, horizontally_moving_platforms,SCREEN_W
     for horizontally_moving_platform in game.horizontally_moving_platforms:
         horizontally_moving_platform.start_position_x += move; horizontally_moving_platform.x += move; horizontally_moving_platform.rect.x = horizontally_moving_platform.x 
 
+    hint_text.x += move
+
     player_1.x += move; player_1.rect.x = player_1.x
     player_2.x += move; player_2.rect.x = player_2.x
 
@@ -341,6 +343,12 @@ info_surface = pygame.Surface((1080, 620)); info_surface.set_alpha(210); info_su
 player_1_info_page_sprite = player_1.animations["idle"]["frames"]["right"][0]
 
 player_2_info_page_sprite = player_2.animations["idle"]["frames"]["left"][0]
+
+
+#hint text#
+
+hint_text = text(1780, 30, "BE FAST!", 20, (255,255,255))
+
 
 #player1 info/controls
 
@@ -670,6 +678,10 @@ while game.on == True:
 
         #################################
 
+        if game.plate_3.activated == True and  game.lever_5.on != True and  game.lever_6.on == True:
+            hint_text.display_text(screen)
+
+
         player_1.movemenet_collision_gravity(game.platforms)
         player_1.animation(screen)
 
@@ -928,4 +940,3 @@ while game.on == True:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
-
