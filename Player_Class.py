@@ -123,7 +123,7 @@ class player:
 
             if self.jump_sound_on != True:
                 if self.name == "player_2":
-                    pygame.mixer.Sound.set_volume(self.jump_sound, 0.5)
+                    pygame.mixer.Sound.set_volume(self.jump_sound, 0.2)
                 pygame.mixer.Sound.play(self.jump_sound); self.jump_sound_on = True
 
             self.y -= self.jump_speed; self.rect.y = self.y
