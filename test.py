@@ -42,13 +42,19 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Not Alone")
 
-#  saving the animations  #
+#Players#
 
-player_1 = player("player_1", 400, 350, False)
+player_1_jump_sound = pygame.mixer.Sound(r"Assets\Audio\JumpSound\Player1JumpSound.mp3")
+player_1 = player("player_1", 400, 350, False, player_1_jump_sound)
 
-player_2 = player("player_2", 500, 350, True)
+
+player_2_jump_sound = pygame.mixer.Sound(r"Assets\Audio\JumpSound\Player2JumpSound.mp3")
+player_2 = player("player_2", 500, 350, True, player_2_jump_sound)
 player_2.speed = 6.7
 player_2.jump_height = 170
+
+
+#  saving the animations  #
 
 #player 1
 
@@ -519,9 +525,9 @@ credit_texts = [credit_text_1, credit_text_2, credit_text_3, credit_text_4, cred
 ################################################################
 
 while game.on == True:
-    player_1 = player("player_1", 400, 350, False)
+    player_1 = player("player_1", 400, 350, False, player_1_jump_sound)
 
-    player_2 = player("player_2", 500, 350, True)
+    player_2 = player("player_2", 500, 350, True, player_2_jump_sound)
     player_2.speed = 6.7
     player_2.jump_height = 170
 

@@ -42,13 +42,19 @@ pygame.init()
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 pygame.display.set_caption("Not Alone")
 
-#  saving the animations  #
+#Players#
 
-player_1 = player("player_1", 400, 350, False)
+player_1_jump_sound = pygame.mixer.Sound(r"Assets\Audio\JumpSound\Player1JumpSound.mp3")
+player_1 = player("player_1", 400, 350, False, player_1_jump_sound)
 
-player_2 = player("player_2", 500, 350, True)
+
+player_2_jump_sound = pygame.mixer.Sound(r"Assets\Audio\JumpSound\Player2JumpSound.mp3")
+player_2 = player("player_2", 500, 350, True, player_2_jump_sound)
 player_2.speed = 6.7
 player_2.jump_height = 170
+
+
+#  saving the animations  #
 
 #player 1
 
@@ -506,29 +512,22 @@ credit_text_3 = text(580, 490, "Naqeeb", 20, (150,20,150))
 
 credit_text_4 = text(450, 530, "Graphics - mostly from itch.io:", 25, (100,170,50))
 
-credit_text_5 = text(450, 570, "ZeggyGames (Character Templates)", 20, (150,20,150))
-credit_text_6 = text(450, 620, "TotusLotus (Coins and Buttons)", 20, (150,20,150))
-credit_text_7 = text(450, 670, "Grand Chaos (Font) - CC-BY-SA 3.0", 20, (150,20,150))
-credit_text_8 = text(450, 720, "Cat_Sopelka (Brick Background)", 20, (150,20,150))
-credit_text_9 = text(440, 770, "Naqeeb (Modifications and Levers)", 20, (150,20,150))
+credit_text_5 = text(400, 570, "ZeggyGames (Character Templates)", 20, (150,20,150))
+credit_text_6 = text(400, 600, "TotusLotus (Coins and Buttons)", 20, (150,20,150))
+credit_text_7 = text(400, 650, "Grand Chaos (Font) - CC-BY-SA 3.0", 20, (150,20,150))
+credit_text_8 = text(400, 690, "Cat_Sopelka (Brick Background)", 20, (150,20,150))
+credit_text_9 = text(400, 730, "Naqeeb (Modifications)", 20, (150,20,150))
 
 
-credit_texts = [credit_text_1, credit_text_2, credit_text_3, credit_text_4, credit_text_5, credit_text_6, credit_text_7, credit_text_8, credit_text_9]
+credit_texts = [credit_text_1, credit_text_2, credit_text_3, credit_text_4, credit_text_5, credit_text_6, credit_text_7, credit_text_8]
 
-def move_credit_texts():
-    for c_t in credit_texts:
-        c_t.y -= 0.5#; c_t.rect.y = c_t.y
-        if c_t.y < 300:
-            c_t.y = 770
-
-        
 
 ################################################################
 
 while game.on == True:
-    player_1 = player("player_1", 400, 350, False)
+    player_1 = player("player_1", 400, 350, False, player_1_jump_sound)
 
-    player_2 = player("player_2", 500, 350, True)
+    player_2 = player("player_2", 500, 350, True, player_2_jump_sound)
     player_2.speed = 6.7
     player_2.jump_height = 170
 
@@ -610,8 +609,6 @@ while game.on == True:
             
 
         screen.fill((255,255,255))
-
-        move_credit_texts()
 
         for t in credit_texts:
             t.display_text(screen)

@@ -1,7 +1,7 @@
 import pygame
 
 class player: 
-    def __init__(self, name, x, y, can_collect_coins):
+    def __init__(self, name, x, y, can_collect_coins, jump_sound):
 
         self.ms = 0 #for animations because each function runs 120/second and the animations between 6-10 incl. 6 and 10
 
@@ -17,6 +17,9 @@ class player:
         self.jump_speed = 5
         self.jump_start_saved = False
         self.jump_start = None
+
+        self.jump_sound = jump_sound
+        self.jump_sound_on = False
 
         self.can_collect_coins = can_collect_coins
 
