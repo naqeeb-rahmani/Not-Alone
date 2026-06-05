@@ -1,4 +1,4 @@
-import pygame
+import pygame, json, socket
 from Player_Class import *
 from Platform_Class import *
 from Pressure_Plates_Class import *
@@ -9,6 +9,25 @@ from Text_Class import *
 from UI_Button_Class import *
 from Menu_Button_Class import *
 from Background_Class import *
+
+#setting up the sockets
+
+IP = socket.gethostbyname(socket.gethostname()) #gets your local ip
+PORT = 5050 #an empty port which the game will use
+
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+server.bind((IP, PORT))
+client.connect((IP, PORT))
+
+
+
+######################
+
+
+
+
 
 #screen#
 
@@ -673,6 +692,7 @@ while game.on == True:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+
 
 
     while game.mode == "credits":
