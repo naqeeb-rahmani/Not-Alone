@@ -15,14 +15,6 @@ from Background_Class import *
 IP = socket.gethostbyname(socket.gethostname()) #gets your local ip
 PORT = 5050 #an empty port which the game will use
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-server.bind((IP, PORT))
-client.connect((IP, PORT))
-
-
-
 ######################
 
 
@@ -322,6 +314,10 @@ def button_effects():
         game.mode = "credits"
         menu_credits_button.activated = False
 
+    if online_join_button.activated == True:
+        game.online_mode = "join"
+    elif online_host_button.activated == True:
+        game.online_mode = "host"
         
 
 
@@ -542,10 +538,17 @@ menu_online_button = menu_button(530, 450, online_button_sprite, online_button_p
 
 menu_credits_button = menu_button(530, 550, credits_button_sprite, credits_button_pressed_sprite)
 
+online_host_button = menu_button(530, 220, host_button_sprite, host_button_pressed_sprite)
+
+online_join_button = menu_button(530, 370, join_button_sprite, join_button_pressed_sprite)
+
+
+online_buttons = [online_host_button, online_join_button]
+
 menu_buttons = [menu_play_button, menu_online_button, menu_credits_button]
 
 #all buttons
-buttons = [to_menu_button, info_button, menu_play_button, menu_credits_button]
+buttons = [to_menu_button, info_button, menu_play_button, menu_credits_button, online_host_button, online_join_button]
 
 #credits
 credits_bg = pygame.image.load(r"Assets\User_Interface\CreditsBackground.png").convert_alpha()
@@ -583,6 +586,12 @@ def move_credit_texts():
 ################################################################
 
 while game.on == True:
+
+    #resetting the socket variables#
+    server = None
+    client = None
+    ################################
+
     player_1 = player("player_1", 400, 350, False, player_1_jump_sound)
 
     player_2 = player("player_2", 500, 350, True, player_2_jump_sound)
@@ -623,7 +632,7 @@ while game.on == True:
 
 
     ########################
-
+    game.online_mode = None
     game.create_and_update_objects(MAP_WIDTH, SCREEN_HEIGHT, coin_spritesheet, small_lever_off_sprite, small_lever_on_sprite, big_lever_off_sprite, big_lever_on_sprite)
     for coins in game.coins:
         coins.get_coin_animation(coin_spritesheet, 14)
@@ -668,7 +677,8 @@ while game.on == True:
         screen.fill((255,255,255))
         screen.blit(background_png_original_streched, (0,0))
 
-
+        for b in online_buttons:
+            screen.blit(b.current_sprite, (b.x, b.y))
     
 
         for mb in ui_buttons_while_game_end_and_credits:
@@ -677,21 +687,28 @@ while game.on == True:
         button_effects()
 
         pygame.display.update()
-        clock.tick(12)
+        clock.tick(120)
         for event in pygame.event.get():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
                     for mb in ui_buttons_while_game_end_and_credits:
                         mb.update_sprite()
+                    for b in online_buttons:
+                        b.update_sprite_menu()
             
             if event.type == pygame.MOUSEBUTTONUP:
                 for mb in ui_buttons_while_game_end_and_credits:
                     mb.update_sprite_and_state()
+                for b in online_buttons:
+                    b.update_sprite_and_state_menu()
 
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+
+    while game.mode == "online: host":
+        pass
 
 
 

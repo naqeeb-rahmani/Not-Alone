@@ -13,6 +13,8 @@ class Game:
 
         self.modes = ["game: running", "game: experiment failed", "game: end", "menu", "online", "online: host or join", "online: host", "online: join", "credits"]
 
+        self.online_mode = None #can be either join or host
+
         self.time = None
         self.time_running = False
 
