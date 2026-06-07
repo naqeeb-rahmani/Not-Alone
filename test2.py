@@ -15,6 +15,8 @@ from Background_Class import *
 IP = socket.gethostbyname(socket.gethostname()) #gets your local ip
 PORT = 5050 #an empty port which the game will use
 
+ADDRESS = (IP, PORT)
+
 ######################
 
 
@@ -314,12 +316,27 @@ def button_effects():
         game.mode = "credits"
         menu_credits_button.activated = False
 
-    if online_join_button.activated == True:
-        game.online_mode = "join"
-    elif online_host_button.activated == True:
+    if online_host_button.activated == True:
         game.online_mode = "host"
-        
+        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server.bind(ADDRESS)
 
+        game.mode = "online: host"
+
+        online_host_button.activated = False
+
+    elif online_join_button.activated == True:
+        game.online_mode = "join"
+        try:
+            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client.connect(ADDRESS)
+
+            game.mode = "online: join"
+
+        except: 
+            print("connection failed\nMake sure that someone is hosting on the same network before rejoining")
+        
+        online_join_button.activated = False
 
 
 # experiment failed - player took damage
@@ -456,8 +473,6 @@ info_page_text = [info_page_text_1, info_page_text_2, info_page_text_3, info_pag
 info_page_text_10, info_page_text_11, info_page_text_12, info_page_text_13, info_page_text_14, info_page_text_15, info_page_text_16, info_page_text_17, info_page_text_18, info_page_text_19,
 info_page_text_20, info_page_text_21, info_page_text_22, info_page_text_23, info_page_text_24, info_page_text_25, info_page_text_26, info_page_text_27, info_page_text_28, info_page_text_29,
 info_page_text_30, info_page_text_31, info_page_text_32, info_page_text_33, info_page_text_34, info_page_text_35, info_page_text_36]
-
-
 
 
 ###### ending ###########
@@ -708,7 +723,12 @@ while game.on == True:
                 exit()
 
     while game.mode == "online: host":
-        pass
+        print("hosting")
+
+
+    while game.mode == "online: join":
+        print("Joined")
+
 
 
 
