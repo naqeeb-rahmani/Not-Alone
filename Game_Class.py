@@ -1,9 +1,10 @@
-import pygame
+import pygame, json, socket
 from Player_Class import *
 from Platform_Class import *
 from Coin_Class import *
 from Lever_Class import *
 from Pressure_Plates_Class import *
+
 
 class Game:
     def __init__(self):
@@ -160,3 +161,18 @@ class Game:
         self.coins = [self.coin_1, self.coin_2, self.coin_3, self.coin_4, self.coin_5, self.coin_6, self.coin_7, self.coin_8]
 
         self.total_coins = len(self.coins)
+
+
+    def send_data_from_client_and_receive(info, client):
+        msg = json.dumps(info)
+        client.send(msg.encode("utf-8"))
+
+        info = json.loads(client.recv(1024).decode("utf-8"))
+
+
+    def send_data_from_server_and_receive(connection, player_2):
+
+        info = json.loads(connection.recv(1024).decode("utf-8"))
+
+        player_2.direction = info["player_2_direction"]
+

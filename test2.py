@@ -320,6 +320,8 @@ def button_effects():
         game.online_mode = "host"
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.bind(ADDRESS)
+        server.listen()
+        connection, addr = server.accept()
 
         game.mode = "online: host"
 
@@ -607,6 +609,21 @@ while game.on == True:
     client = None
     ################################
 
+    #setting/resetting player positions and connection variables for online#
+    client_data = {
+        "connection": "established",
+        "player_2_direction": player_2.direction
+    }
+    server_data = {
+        "connection": "not established",
+        "player_1_pos_x": player_1.x,
+        "player_1_pos_y": player_1.y,
+        "player_2_pos_x": player_2.x,
+        "player_2_pos_y": player_2.y
+    }
+
+
+
     player_1 = player("player_1", 400, 350, False, player_1_jump_sound)
 
     player_2 = player("player_2", 500, 350, True, player_2_jump_sound)
@@ -724,6 +741,8 @@ while game.on == True:
 
     while game.mode == "online: host":
         print("hosting")
+
+
 
 
     while game.mode == "online: join":
