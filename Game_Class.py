@@ -163,7 +163,7 @@ class Game:
         self.total_coins = len(self.coins)
 
 
-    def send_data_from_client_and_receive(client, player_1, player_2):
+    def send_data_from_client_and_receive(self, client, player_1, player_2):
         
         data = {
         "player_2_direction": player_2.direction,
@@ -187,7 +187,7 @@ class Game:
         except:
             print("Error while sending/receiving data to/from the host")
 
-    def send_data_from_server_and_receive(connection, player_1, player_2):
+    def send_data_from_server_and_receive(self, connection, player_1, player_2):
     
         data = {
         "player_2_pos_x": player_2.x,
@@ -218,3 +218,58 @@ class Game:
         except:
             print("Error while sending data to the client")
 
+
+#!REMOVING TRY/EXCEPT FOR DEBUGGING!#
+
+'''    def send_data_from_client_and_receive(self, client, player_1, player_2):
+        
+        data = {
+        "player_2_direction": player_2.direction,
+        "player_2_last_direction": player_2.last_direction,
+        "player_2_jump": player_2.jump,
+        "player_2_on_something": player_2.on_something
+    }
+
+         
+        msg = json.dumps(data)
+        client.send(msg.encode("utf-8"))
+
+        info = json.loads(client.recv(1024).decode("utf-8"))
+
+        player_2.x = info["player_2_pos_x"]; player_1.y = info["player_2_pos_y"]
+
+        player_1.x = info["player_1_pos_x"]; player_1.y = info["player_1_pos_y"]
+        player_1.direction = info["player_1_direction"]; player_1.last_direction = info["player_1_last_direction"]
+        player_1.current_anim = info["player_1_current_animation"]
+
+    
+        print("Error while sending/receiving data to/from the host")
+
+    def send_data_from_server_and_receive(self, connection, player_1, player_2):
+    
+        data = {
+        "player_2_pos_x": player_2.x,
+        "player_2_pos_y": player_2.y,
+
+        "player_1_pos_x": player_1.x,
+        "player_1_pos_y": player_1.y,
+        "player_1_direction": player_1.direction,
+        "player_1_last_direction": player_1.last_direction,
+        "player_1_current_animation": player_1.current_anim,
+        }
+
+
+        
+
+        info = json.loads(connection.recv(1024).decode("utf-8"))
+
+        player_2.direction = info["player_2_direction"]; player_2.last_direction = info["player_2_last_direction"]
+        player_2.jump = info["player_2_jump"]; player_2.on_something = info["player_2_on_something"]
+
+
+
+        try: 
+            msg = json.dumps(data)
+            connection.send(msg.encode("utf-8"))
+        except:
+            print("Error while sending data to the host")'''

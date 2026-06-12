@@ -317,6 +317,8 @@ def button_effects():
         menu_credits_button.activated = False
 
     if online_host_button.activated == True:
+        global connection
+
         game.online_mode = "host"
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.bind(ADDRESS)
@@ -767,7 +769,7 @@ while game.on == True:
         player_2.animation(screen)
         player_2.movemenet_collision_gravity(game.platforms)
 
-        game.send_data_from_server_and_receive(player_1, player_2)
+        game.send_data_from_server_and_receive(connection, player_1, player_2)
 
         failed_or_not()
 
@@ -939,7 +941,7 @@ while game.on == True:
 
         player_2.animation(screen)
 
-        game.send_data_from_client_and_receive(player_1, player_2)
+        game.send_data_from_client_and_receive(client, player_1, player_2)
 
         failed_or_not()
 
