@@ -181,7 +181,7 @@ class Game:
             player_2.x = info["player_2_pos_x"]; player_1.y = info["player_2_pos_y"]
 
             player_1.x = info["player_1_pos_x"]; player_1.y = info["player_1_pos_y"]
-            player_1.direction = info["player_1_direction"]; player_1.last_direction = ["player_1_last_direction"]
+            player_1.direction = info["player_1_direction"]; player_1.last_direction = info["player_1_last_direction"]
             player_1.current_anim = info["player_1_current_animation"]
 
         except:

@@ -24,7 +24,7 @@ def receive_msg():
     info = json.loads(connection.recv(1024).decode("utf-8"))
 
 while True: 
-    receive_msg()
+    receive_msg() 
 
 
     print(info["connection"])
@@ -33,6 +33,9 @@ while True:
         connection.send("connection established".encode("utf-8"))
 
     clock.tick(1)
+
+    
+
 
 
     

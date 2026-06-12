@@ -321,6 +321,7 @@ def button_effects():
         server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server.bind(ADDRESS)
         server.listen()
+        
         connection, addr = server.accept()
 
         connection.setblocking(False)
@@ -904,47 +905,6 @@ while game.on == True:
                 exit()
 
 
-    while game.mode == "game: end":
-
-        if game.time_running == True:
-            game.time_running = False
-            game.end_time = pygame.time.get_ticks()
-            game.time  = (game.end_time - game.start_time)//1000 #in seconds
-            ending_time = text(350, 350, f"Time: {game.time} seconds or around {(game.time)//60} minute(s)", 30, (255,255,255))
- 
-
-        screen.fill((0,0,0))
-
-        good_ending_text_1.display_text(screen)
-
-        ending_time.display_text(screen)
-
-        for b in ui_buttons_while_game_end_and_credits:
-            screen.blit(b.current_sprite, (b.x, b.y))
-
-        button_effects()
-
-
-        pygame.display.update()
-
-        for event in pygame.event.get():
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pressed()[0]:
-                    for b in ui_buttons_while_game_end_and_credits:
-                        b.update_sprite()
-            
-            if event.type == pygame.MOUSEBUTTONUP:
-                #if pygame.mouse.get_pressed()[0]:
-                for b in ui_buttons_while_game_end_and_credits:
-                    b.update_sprite_and_state()
-
-
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-
-
 
     while game.mode == "online: join":
         print("Joined")
@@ -970,7 +930,6 @@ while game.on == True:
             hint_text.display_text(screen)
 
 
-        player_1.movemenet_collision_gravity(game.platforms)
         player_1.animation(screen)
 
 
@@ -979,9 +938,8 @@ while game.on == True:
 
 
         player_2.animation(screen)
-        player_2.movemenet_collision_gravity(game.platforms)
 
-        game.send_data_from_server_and_receive(player_1, player_2)
+        game.send_data_from_client_and_receive(player_1, player_2)
 
         failed_or_not()
 
@@ -995,7 +953,7 @@ while game.on == True:
         print(game.mode)
 
         ##################################
-
+ 
         for p_p in game.pressure_plates:
             pygame.draw.rect(screen, p_p.colour, p_p)
 
@@ -1050,17 +1008,17 @@ while game.on == True:
 
             if event.type == pygame.KEYDOWN:
                 #move#
-                if event.key == pygame.K_d: player_1.direction = "Right"
-                if event.key == pygame.K_a: player_1.direction = "Left"
+                if event.key == pygame.K_d: player_2.direction = "Right"
+                if event.key == pygame.K_a: player_2.direction = "Left"
 
                 if event.key == pygame.K_w: 
-                    if player_1.jump_pressed == False:
-                        if player_1.on_something: player_1.jump = True; player_1.jump_pressed = True
+                    if player_2.jump_pressed == False:
+                        if player_2.on_something: player_2.jump = True; player_2.jump_pressed = True
 
                 #interact#
                 if event.key == pygame.K_e:
                     for lever in game.levers:
-                        if player_1.rect.colliderect(lever.rect):
+                        if player_2.rect.colliderect(lever.rect):
                             if lever.toggleable == True:
                                 if lever.button_pressed == False:
                                     if lever.on != True:
@@ -1075,29 +1033,14 @@ while game.on == True:
 
             if event.type == pygame.KEYUP:
                 #move
-                if event.key == pygame.K_d: player_1.direction = None; player_1.last_direction = "Right"
-                if event.key == pygame.K_a: player_1.direction = None; player_1.last_direction = "Left"
-
-                #interact#
-                if event.key == pygame.K_e:
-                    for lever in game.levers:
-                        if player_1.rect.colliderect(lever.rect):
-                            if lever.toggleable == True:
-                                lever.button_pressed = False
-
-                            elif lever.toggleable != True:
-                                if lever.on == True:
-                                    lever.on = False
-                                
-                                lever.update_lever_sprite_based_on_state()
-        
-                                
+                if event.key == pygame.K_d: player_2.direction = None; player_2.last_direction = "Right"
+                if event.key == pygame.K_a: player_2.direction = None; player_2.last_direction = "Left"
                 
                 
                 #jump
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_w: 
-                    player_1.jump_pressed = False
+                    player_2.jump_pressed = False
 
 
             ######## #ui buttons # ###########
@@ -1117,6 +1060,48 @@ while game.on == True:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+
+
+    while game.mode == "game: end":
+
+        if game.time_running == True:
+            game.time_running = False
+            game.end_time = pygame.time.get_ticks()
+            game.time  = (game.end_time - game.start_time)//1000 #in seconds
+            ending_time = text(350, 350, f"Time: {game.time} seconds or around {(game.time)//60} minute(s)", 30, (255,255,255))
+ 
+
+        screen.fill((0,0,0))
+
+        good_ending_text_1.display_text(screen)
+
+        ending_time.display_text(screen)
+
+        for b in ui_buttons_while_game_end_and_credits:
+            screen.blit(b.current_sprite, (b.x, b.y))
+
+        button_effects()
+
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for b in ui_buttons_while_game_end_and_credits:
+                        b.update_sprite()
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                #if pygame.mouse.get_pressed()[0]:
+                for b in ui_buttons_while_game_end_and_credits:
+                    b.update_sprite_and_state()
+
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
 
 
     while game.mode == "game: end":
