@@ -323,6 +323,8 @@ def button_effects():
         server.listen()
         connection, addr = server.accept()
 
+        connection.setblocking(False)
+
         game.mode = "online: host"
 
         online_host_button.activated = False
@@ -332,6 +334,8 @@ def button_effects():
         try:
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect(ADDRESS)
+
+            client.setblocking(False) 
 
             game.mode = "online: join"
 
@@ -609,19 +613,6 @@ while game.on == True:
     client = None
     ################################
 
-    #setting/resetting player positions and connection variables for online#
-    client_data = {
-        "connection": "established",
-        "player_2_direction": player_2.direction
-    }
-    server_data = {
-        "connection": "not established",
-        "player_1_pos_x": player_1.x,
-        "player_1_pos_y": player_1.y,
-        "player_2_pos_x": player_2.x,
-        "player_2_pos_y": player_2.y
-    }
-
 
 
     player_1 = player("player_1", 400, 350, False, player_1_jump_sound)
@@ -743,11 +734,430 @@ while game.on == True:
         print("hosting")
 
 
+        if game.time_running == False:
+            game.start_time = pygame.time.get_ticks(); game.time_running = True
+
+        screen.fill((255,255,255))
+
+        for b in backgrounds:
+            screen.blit(b.png, (b.x,b.y))
+
+            ###################################
+
+        #setting player_1 direction to None if they are holding down e for a non toggleable lever so they can't move during that period
+        for lever_ in game.levers:
+            if lever_.on == True and lever_.toggleable != True:
+                player_1.direction = None
+
+        #################################
+
+        if game.plate_3.activated == True and  game.lever_5.on != True and  game.lever_6.on == True:
+            hint_text.display_text(screen)
+
+
+        player_1.movemenet_collision_gravity(game.platforms)
+        player_1.animation(screen)
+
+
+        for l in game.levers:
+            screen.blit(l.sprite, (l.x, l.y))
+
+
+        player_2.animation(screen)
+        player_2.movemenet_collision_gravity(game.platforms)
+
+        game.send_data_from_server_and_receive(player_1, player_2)
+
+        failed_or_not()
+
+        update_pressure_plates()
+
+        pressure_plate_and_lever_effects()
+
+        camera(player_1, player_2, game.platforms, game.horizontally_moving_platforms,SCREEN_WIDTH)
+
+        print(to_menu_button.activated)
+        print(game.mode)
+
+        ##################################
+
+        for p_p in game.pressure_plates:
+            pygame.draw.rect(screen, p_p.colour, p_p)
+
+        for p in game.platforms_for_drawing:
+            pygame.draw.rect(screen, p.colour, p)
+
+        if player_1.rect.colliderect(game.rect_for_checking_completion):
+            player_1.collided_with_completion_rect = True
+        if player_2.rect.colliderect(game.rect_for_checking_completion):
+            player_2.collided_with_completion_rect = True
+
+
+    ##############################################
+        pygame.draw.rect(screen, game.floor.colour, game.floor)
+        pygame.draw.rect(screen, game.grass.colour, game.grass)
+        pygame.draw.rect(screen, game.roof.colour, game.roof.rect)
+    ####################################################
+
+        for coin in game.coins:
+            coin.animate(screen)
+            
+        player_2.collect_coins(game.coins)
+
+        display_number_of_coins = display_number_of_coins_font.render(f"Coins: {player_2.coins_collected} / {game.total_coins}", True, (0,0,0))
+        screen.blit(display_number_of_coins, (5, 650))
+
+
+        ##################################
+        #buttons#
+
+        for b in ui_buttons_while_game:
+            screen.blit(b.current_sprite, (b.x, b.y))
+            
+        button_effects()
+
+                #ending fade#
+        if player_1.collided_with_completion_rect == True and player_2.collided_with_completion_rect == True:
+            good_ending_surface.set_alpha(ending_surface_alpha)
+            screen.blit(good_ending_surface, (0,0))
+            ending_surface_alpha += 5
+            if ending_surface_alpha == 255:
+                game.mode = "game: end"
+
+
+
+        #################################
+
+        pygame.display.update()
+        clock.tick(120)
+        for event in pygame.event.get():
+
+
+            if event.type == pygame.KEYDOWN:
+                #move#
+                if event.key == pygame.K_d: player_1.direction = "Right"
+                if event.key == pygame.K_a: player_1.direction = "Left"
+
+                if event.key == pygame.K_w: 
+                    if player_1.jump_pressed == False:
+                        if player_1.on_something: player_1.jump = True; player_1.jump_pressed = True
+
+                #interact#
+                if event.key == pygame.K_e:
+                    for lever in game.levers:
+                        if player_1.rect.colliderect(lever.rect):
+                            if lever.toggleable == True:
+                                if lever.button_pressed == False:
+                                    if lever.on != True:
+                                        lever.on = True
+                                    elif lever.on == True:
+                                        lever.on = False
+                                    lever.button_pressed = True
+                            elif lever.toggleable != True:
+                                lever.on = True
+                            
+                            lever.update_lever_sprite_based_on_state()
+
+            if event.type == pygame.KEYUP:
+                #move
+                if event.key == pygame.K_d: player_1.direction = None; player_1.last_direction = "Right"
+                if event.key == pygame.K_a: player_1.direction = None; player_1.last_direction = "Left"
+
+                #interact#
+                if event.key == pygame.K_e:
+                    for lever in game.levers:
+                        if player_1.rect.colliderect(lever.rect):
+                            if lever.toggleable == True:
+                                lever.button_pressed = False
+
+                            elif lever.toggleable != True:
+                                if lever.on == True:
+                                    lever.on = False
+                                
+                                lever.update_lever_sprite_based_on_state()
+        
+                                
+                
+                
+                #jump
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_w: 
+                    player_1.jump_pressed = False
+
+
+            ######## #ui buttons # ###########
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for b in ui_buttons_while_game:
+                        b.update_sprite()
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                #if pygame.mouse.get_pressed()[0]:
+                for b in ui_buttons_while_game:
+                    b.update_sprite_and_state()
+
+
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+
+    while game.mode == "game: end":
+
+        if game.time_running == True:
+            game.time_running = False
+            game.end_time = pygame.time.get_ticks()
+            game.time  = (game.end_time - game.start_time)//1000 #in seconds
+            ending_time = text(350, 350, f"Time: {game.time} seconds or around {(game.time)//60} minute(s)", 30, (255,255,255))
+ 
+
+        screen.fill((0,0,0))
+
+        good_ending_text_1.display_text(screen)
+
+        ending_time.display_text(screen)
+
+        for b in ui_buttons_while_game_end_and_credits:
+            screen.blit(b.current_sprite, (b.x, b.y))
+
+        button_effects()
+
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for b in ui_buttons_while_game_end_and_credits:
+                        b.update_sprite()
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                #if pygame.mouse.get_pressed()[0]:
+                for b in ui_buttons_while_game_end_and_credits:
+                    b.update_sprite_and_state()
+
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
 
 
     while game.mode == "online: join":
         print("Joined")
 
+        if game.time_running == False:
+            game.start_time = pygame.time.get_ticks(); game.time_running = True
+
+        screen.fill((255,255,255))
+
+        for b in backgrounds:
+            screen.blit(b.png, (b.x,b.y))
+
+            ###################################
+
+        #setting player_1 direction to None if they are holding down e for a non toggleable lever so they can't move during that period
+        for lever_ in game.levers:
+            if lever_.on == True and lever_.toggleable != True:
+                player_1.direction = None
+
+        #################################
+
+        if game.plate_3.activated == True and  game.lever_5.on != True and  game.lever_6.on == True:
+            hint_text.display_text(screen)
+
+
+        player_1.movemenet_collision_gravity(game.platforms)
+        player_1.animation(screen)
+
+
+        for l in game.levers:
+            screen.blit(l.sprite, (l.x, l.y))
+
+
+        player_2.animation(screen)
+        player_2.movemenet_collision_gravity(game.platforms)
+
+        game.send_data_from_server_and_receive(player_1, player_2)
+
+        failed_or_not()
+
+        update_pressure_plates()
+
+        pressure_plate_and_lever_effects()
+
+        camera(player_1, player_2, game.platforms, game.horizontally_moving_platforms,SCREEN_WIDTH)
+
+        print(to_menu_button.activated)
+        print(game.mode)
+
+        ##################################
+
+        for p_p in game.pressure_plates:
+            pygame.draw.rect(screen, p_p.colour, p_p)
+
+        for p in game.platforms_for_drawing:
+            pygame.draw.rect(screen, p.colour, p)
+
+        if player_1.rect.colliderect(game.rect_for_checking_completion):
+            player_1.collided_with_completion_rect = True
+        if player_2.rect.colliderect(game.rect_for_checking_completion):
+            player_2.collided_with_completion_rect = True
+
+
+    ##############################################
+        pygame.draw.rect(screen, game.floor.colour, game.floor)
+        pygame.draw.rect(screen, game.grass.colour, game.grass)
+        pygame.draw.rect(screen, game.roof.colour, game.roof.rect)
+    ####################################################
+
+        for coin in game.coins:
+            coin.animate(screen)
+            
+        player_2.collect_coins(game.coins)
+
+        display_number_of_coins = display_number_of_coins_font.render(f"Coins: {player_2.coins_collected} / {game.total_coins}", True, (0,0,0))
+        screen.blit(display_number_of_coins, (5, 650))
+
+
+        ##################################
+        #buttons#
+
+        for b in ui_buttons_while_game:
+            screen.blit(b.current_sprite, (b.x, b.y))
+            
+        button_effects()
+
+                #ending fade#
+        if player_1.collided_with_completion_rect == True and player_2.collided_with_completion_rect == True:
+            good_ending_surface.set_alpha(ending_surface_alpha)
+            screen.blit(good_ending_surface, (0,0))
+            ending_surface_alpha += 5
+            if ending_surface_alpha == 255:
+                game.mode = "game: end"
+
+
+
+        #################################
+
+        pygame.display.update()
+        clock.tick(120)
+        for event in pygame.event.get():
+
+
+            if event.type == pygame.KEYDOWN:
+                #move#
+                if event.key == pygame.K_d: player_1.direction = "Right"
+                if event.key == pygame.K_a: player_1.direction = "Left"
+
+                if event.key == pygame.K_w: 
+                    if player_1.jump_pressed == False:
+                        if player_1.on_something: player_1.jump = True; player_1.jump_pressed = True
+
+                #interact#
+                if event.key == pygame.K_e:
+                    for lever in game.levers:
+                        if player_1.rect.colliderect(lever.rect):
+                            if lever.toggleable == True:
+                                if lever.button_pressed == False:
+                                    if lever.on != True:
+                                        lever.on = True
+                                    elif lever.on == True:
+                                        lever.on = False
+                                    lever.button_pressed = True
+                            elif lever.toggleable != True:
+                                lever.on = True
+                            
+                            lever.update_lever_sprite_based_on_state()
+
+            if event.type == pygame.KEYUP:
+                #move
+                if event.key == pygame.K_d: player_1.direction = None; player_1.last_direction = "Right"
+                if event.key == pygame.K_a: player_1.direction = None; player_1.last_direction = "Left"
+
+                #interact#
+                if event.key == pygame.K_e:
+                    for lever in game.levers:
+                        if player_1.rect.colliderect(lever.rect):
+                            if lever.toggleable == True:
+                                lever.button_pressed = False
+
+                            elif lever.toggleable != True:
+                                if lever.on == True:
+                                    lever.on = False
+                                
+                                lever.update_lever_sprite_based_on_state()
+        
+                                
+                
+                
+                #jump
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_w: 
+                    player_1.jump_pressed = False
+
+
+            ######## #ui buttons # ###########
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for b in ui_buttons_while_game:
+                        b.update_sprite()
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                #if pygame.mouse.get_pressed()[0]:
+                for b in ui_buttons_while_game:
+                    b.update_sprite_and_state()
+
+
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+
+    while game.mode == "game: end":
+
+        if game.time_running == True:
+            game.time_running = False
+            game.end_time = pygame.time.get_ticks()
+            game.time  = (game.end_time - game.start_time)//1000 #in seconds
+            ending_time = text(350, 350, f"Time: {game.time} seconds or around {(game.time)//60} minute(s)", 30, (255,255,255))
+ 
+
+        screen.fill((0,0,0))
+
+        good_ending_text_1.display_text(screen)
+
+        ending_time.display_text(screen)
+
+        for b in ui_buttons_while_game_end_and_credits:
+            screen.blit(b.current_sprite, (b.x, b.y))
+
+        button_effects()
+
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for b in ui_buttons_while_game_end_and_credits:
+                        b.update_sprite()
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                #if pygame.mouse.get_pressed()[0]:
+                for b in ui_buttons_while_game_end_and_credits:
+                    b.update_sprite_and_state()
+
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
 
 
 
