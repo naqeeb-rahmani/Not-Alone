@@ -284,7 +284,7 @@ def button_effects():
     if to_menu_button.activated == True and game.mode != "menu":
         game.mode = "menu"
 
-    if info_button.activated == True and game.mode == "game: running":
+    if info_button.activated == True and (game.mode == "game: running" or game.mode == "online: join" or game.mode == "online: host"):
         screen.blit(info_surface, (100, 70))
 
         screen.blit(player_1_info_page_sprite, (100, 170))
