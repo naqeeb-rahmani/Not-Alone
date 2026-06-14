@@ -163,7 +163,7 @@ class Game:
         self.total_coins = len(self.coins)
 
 
-def send_data_from_client_and_receive(client, player_1, player_2, game):
+def send_data_from_client_and_receive(client, player_1, player_2, game, backgrounds, hint_text):
     
     data = {
     "player_2_x": player_2.x,
@@ -183,6 +183,20 @@ def send_data_from_client_and_receive(client, player_1, player_2, game):
         player_1.x = info["player_1_x"]; player_1.rect.x = info["player_1_x"]; player_1.y = info["player_1_y"]; player_1.rect.y = info["player_1_y"]
         player_1.direction = info["player_1_direction"]; player_1.last_direction = info["player_1_last_direction"]
         player_1.jump = info["player_1_jump"]; player_1.on_something = info["player_1_on_something"]
+
+        total_camera_offset = info["total_camera_offset"]
+
+        for background in backgrounds:
+            background.x += (total_camera_offset * 0.5)
+        for platform in game.platforms:
+            platform.x += total_camera_offset
+        for object in game.non_collideable_objects:
+            object.x += total_camera_offset; object.rect.x = object.x
+
+        hint_text.x += total_camera_offset
+
+        player_1.x += total_camera_offset; player_1.rect.x = player_1.x
+        player_2.x += total_camera_offset; player_2.rect.x = player_2.x
 
         if info["player_1_interact"] == True:
             for lever in game.levers:
@@ -216,7 +230,7 @@ def send_data_from_client_and_receive(client, player_1, player_2, game):
 
 
 
-def send_data_from_host_and_receive(connection, player_1, player_2, i):
+def send_data_from_host_and_receive(connection, player_1, player_2, i, old_total_camera_offset, new_total_camera_offset):
 
     data = {
     "player_1_x": player_1.x,
@@ -225,7 +239,8 @@ def send_data_from_host_and_receive(connection, player_1, player_2, i):
     "player_1_last_direction": player_1.last_direction,
     "player_1_jump": player_1.jump,
     "player_1_on_something": player_1.on_something,
-    "player_1_interact": i
+    "player_1_interact": i,
+    "total_camera_offset": (new_total_camera_offset - old_total_camera_offset)
     }
 
 
