@@ -377,8 +377,8 @@ def camera(player_1, player_2, platforms, horizontally_moving_platforms,SCREEN_W
         platform.x += move
     for object in game.non_collideable_objects:
         object.x += move; object.rect.x = object.x
-    for horizontally_moving_platform in game.horizontally_moving_platforms:
-        horizontally_moving_platform.start_position_x += move; horizontally_moving_platform.x += move; horizontally_moving_platform.rect.x = horizontally_moving_platform.x 
+    #for horizontally_moving_platform in game.horizontally_moving_platforms:
+    #    horizontally_moving_platform.start_position_x += move; horizontally_moving_platform.x += move; horizontally_moving_platform.rect.x = horizontally_moving_platform.x 
 
     hint_text.x += move
 
