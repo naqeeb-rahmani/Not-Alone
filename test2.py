@@ -618,6 +618,9 @@ while game.on == True:
     client = None
     ################################
 
+    #resetting interaction trigger for online
+    
+    interact_button_pressed_online = False
 
 
     player_1 = player("player_1", 400, 350, False, player_1_jump_sound)
@@ -723,7 +726,7 @@ while game.on == True:
                     for mb in ui_buttons_while_game_end_and_credits:
                         mb.update_sprite()
                     for b in online_buttons:
-                        b.update_sprite_menu()
+                        b.update_sprite_menu() 
             
             if event.type == pygame.MOUSEBUTTONUP:
                 for mb in ui_buttons_while_game_end_and_credits:
@@ -738,7 +741,7 @@ while game.on == True:
     while game.mode == "online: host":
         print("hosting")
 
-        send_data_from_host_and_receive(connection, player_1, player_2)
+        send_data_from_host_and_receive(connection, player_1, player_2, interact_button_pressed_online)
 
         if game.time_running == False:
             game.start_time = pygame.time.get_ticks(); game.time_running = True
@@ -848,6 +851,7 @@ while game.on == True:
 
                 #interact#
                 if event.key == pygame.K_e:
+                    interact_button_pressed_online = True
                     for lever in game.levers:
                         if player_1.rect.colliderect(lever.rect):
                             if lever.toggleable == True:
@@ -869,6 +873,7 @@ while game.on == True:
 
                 #interact#
                 if event.key == pygame.K_e:
+                    interact_button_pressed_online = False
                     for lever in game.levers:
                         if player_1.rect.colliderect(lever.rect):
                             if lever.toggleable == True:
@@ -913,7 +918,7 @@ while game.on == True:
     while game.mode == "online: join":
         print("Joined")
 
-        send_data_from_client_and_receive(client, player_1, player_2)
+        send_data_from_client_and_receive(client, player_1, player_2, game)
 
         if game.time_running == False:
             game.start_time = pygame.time.get_ticks(); game.time_running = True
@@ -1027,19 +1032,6 @@ while game.on == True:
                 #move
                 if event.key == pygame.K_d: player_2.direction = None; player_2.last_direction = "Right"
                 if event.key == pygame.K_a: player_2.direction = None; player_2.last_direction = "Left"
-
-                #interact#
-#                if event.key == pygame.K_e:
-#                    for lever in game.levers:
-#                        if player_1.rect.colliderect(lever.rect):
-#                            if lever.toggleable == True:
-#                                lever.button_pressed = False
-#
-#                            elif lever.toggleable != True:
-#                                if lever.on == True:
-#                                    lever.on = False
-#                                
-#                                lever.update_lever_sprite_based_on_state()
         
                                 
                 
