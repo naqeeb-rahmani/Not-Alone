@@ -775,7 +775,9 @@ while game.on == True:
 
 
         player_2.animation(screen)
-        #player_2.movemenet_collision_gravity(game.platforms)
+        if player_2.coordinates_synced_online:
+            player_2.movemenet_collision_gravity(game.platforms)
+
 
         failed_or_not()
 
@@ -946,7 +948,9 @@ while game.on == True:
         send_data_from_client_and_receive(client, player_1, player_2, game)
 
 
-        #player_1.movemenet_collision_gravity(game.platforms)
+        if player_1.coordinates_synced_online:
+            player_1.movemenet_collision_gravity(game.platforms)
+
         player_1.animation(screen)
 
 

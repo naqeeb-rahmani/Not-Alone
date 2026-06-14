@@ -3,6 +3,8 @@ import pygame
 class player: 
     def __init__(self, name, x, y, can_collect_coins, jump_sound):
 
+        self.coordinates_synced_online = True
+
         self.ms = 0 #for animations because each function runs 120/second and the animations between 6-10 incl. 6 and 10
 
         self.name = name

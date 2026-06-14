@@ -213,6 +213,12 @@ def send_data_from_client_and_receive(client, player_1, player_2, game):
                         
                         lever.update_lever_sprite_based_on_state()
 
+        if ((player_1.x - info["player_1_x"])**(2) + (player_1.y - info["player_1_y"])**(2))**(1/2) < 10:
+            player_1.coordinates_synced_online = True
+        else:
+            player_1.coordinates_synced_online = False
+            player_1.x = info["player_1_x"]; player_1.y = info["player_1_y"]
+
     except:
         print("Error while sending/receiving data to/from the host")
 
@@ -239,6 +245,15 @@ def send_data_from_host_and_receive(connection, player_1, player_2, i):
         player_2.direction = info["player_2_direction"]; player_2.last_direction = info["player_2_last_direction"]
         player_2.jump = info["player_2_jump"]; player_2.on_something = info["player_2_on_something"]
 
+
+        if ((player_2.x - info["player_2_x"])**(2) + (player_2.y - info["player_2_y"])**(2))**(1/2) < 10:
+            player_2.coordinates_synced_online = True
+        else:
+            player_2.coordinates_synced_online = False
+            player_2.x = info["player_2_x"]; player_2.y = info["player_2_y"]
+
+
+
     except:
         print("Error while sending/receiving data to/from the host")
 
@@ -248,6 +263,9 @@ def send_data_from_host_and_receive(connection, player_1, player_2, i):
         connection.send(msg.encode("utf-8"))
     except:
         print("Error while sending data to the client")
+
+
+        
 
 
 #!REMOVING TRY/EXCEPT FOR DEBUGGING!#
