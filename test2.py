@@ -367,7 +367,7 @@ def text_box_effects():
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             client.connect(("".join(ip_input.text_list), PORT))
 
-            client.setblocking(False) 
+            #client.setblocking(False) 
 
 
             game.mode = "online: join"
@@ -844,8 +844,8 @@ while game.on == True:
 
 
         player_2.animation(screen)
-        #if player_2.coordinates_synced_online:
-        player_2.movemenet_collision_gravity(game.platforms)
+        if player_2.coordinates_synced_online:
+            player_2.movemenet_collision_gravity(game.platforms)
 
 
         failed_or_not()
