@@ -330,7 +330,7 @@ def button_effects():
             
             connection, addr = server.accept()
 
-            connection.setblocking(False)
+            #connection.setblocking(False)###############################################################
 
             game.mode = "online: host"
         
@@ -844,8 +844,8 @@ while game.on == True:
 
 
         player_2.animation(screen)
-        if player_2.coordinates_synced_online:
-            player_2.movemenet_collision_gravity(game.platforms)
+        #if player_2.coordinates_synced_online:
+        player_2.movemenet_collision_gravity(game.platforms)
 
 
         failed_or_not()
