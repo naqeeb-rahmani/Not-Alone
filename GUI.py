@@ -41,7 +41,3 @@ class GUI:
             if event.key == pygame.K_RETURN:
                 self.finished_writing = True
                 
-    
-def text_box_effect(game, x):
-    if x.finished_writing == True:
-        game.mode 

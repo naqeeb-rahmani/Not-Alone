@@ -359,6 +359,21 @@ def button_effects():
         online_join_button.activated = False
 
 
+def text_box_effects():
+    if ip_input.finished_writing == True:
+        try:
+
+            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client.connect(("".join(ip_input.text_list), PORT))
+
+            client.setblocking(False) 
+
+
+            game.mode = "online: join"
+        except:
+            print("error while connecting to the host")
+
+
 def failed_or_not():
     if player_1.y > 720 or player_1.y < 0 or player_2.y > 720 or player_2.y < 0:
         game.mode = "game: experiment failed"
@@ -765,6 +780,8 @@ while game.on == True:
             screen.blit(mb.current_sprite, (mb.x, mb.y))
 
         button_effects()
+
+        text_box_effects()
 
         ip_input.draw(screen, (255,255,255), (0,0,0))
 
