@@ -361,6 +361,7 @@ def button_effects():
 
 def text_box_effects():
     if ip_input.finished_writing == True:
+        global client
         try:
 
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -371,6 +372,7 @@ def text_box_effects():
 
             game.mode = "online: join"
         except:
+            ip_input.finished_writing == False
             print("error while connecting to the host")
 
 

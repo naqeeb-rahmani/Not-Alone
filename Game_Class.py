@@ -263,6 +263,111 @@ def send_data_from_host_and_receive(connection, player_1, player_2, i):
         print("Error while sending data to the client")
 
 
+
+#removing the try/expects for debugging#
+
+def send_data_from_client_and_receive(client, player_1, player_2, game):
+    
+    data = {
+    "player_2_x": player_2.x,
+    "player_2_y": player_2.y,
+    "player_2_direction": player_2.direction,
+    "player_2_last_direction": player_2.last_direction,
+    "player_2_jump": player_2.jump,
+    "player_2_on_something": player_2.on_something
+}
+
+    try:   
+        msg = json.dumps(data)
+        client.send(msg.encode("utf-8"))
+
+        info = json.loads(client.recv(1024).decode("utf-8"))
+
+        #player_1.x = info["player_1_x"]; player_1.rect.x = info["player_1_x"]; player_1.y = info["player_1_y"]; player_1.rect.y = info["player_1_y"]
+        player_1.direction = info["player_1_direction"]; player_1.last_direction = info["player_1_last_direction"]
+        player_1.jump = info["player_1_jump"]; player_1.on_something = info["player_1_on_something"]
+
+
+
+        if info["player_1_interact"] == True:
+            for lever in game.levers:
+                if player_1.rect.colliderect(lever.rect):
+                    if lever.toggleable == True:
+                        if lever.button_pressed == False:
+                            if lever.on != True:
+                                lever.on = True
+                            elif lever.on == True:
+                                lever.on = False
+                            lever.button_pressed = True
+                    elif lever.toggleable != True:
+                        lever.on = True
+                    
+                    lever.update_lever_sprite_based_on_state()
+
+        if info["player_1_interact"] == False:
+            for lever in game.levers:
+                if player_1.rect.colliderect(lever.rect):
+                    if lever.toggleable == True:
+                        lever.button_pressed = False
+
+                    elif lever.toggleable != True:
+                        if lever.on == True:
+                            lever.on = False
+                        
+                        lever.update_lever_sprite_based_on_state()
+
+        if (((player_1.x - info["player_1_x"])**(2) + (player_1.y - info["player_1_y"])**(2))**(1/2)) < 20:
+            player_1.coordinates_synced_online = True
+        else:
+            player_1.coordinates_synced_online = False
+            player_1.x = info["player_1_x"]; player_1.y = info["player_1_y"]
+
+    except:
+        print("Error while sending/receiving data to/from the host")
+
+
+
+def send_data_from_host_and_receive(connection, player_1, player_2, i):
+
+    data = {
+    "player_1_x": player_1.x,
+    "player_1_y": player_1.y,
+    "player_1_direction": player_1.direction,
+    "player_1_last_direction": player_1.last_direction,
+    "player_1_jump": player_1.jump,
+    "player_1_on_something": player_1.on_something,
+    "player_1_interact": i,
+    }
+
+
+    try:
+
+        info = json.loads(connection.recv(1024).decode("utf-8"))
+
+        #player_2.x = info["player_2_x"]; player_2.rect.x = info["player_2_x"]; player_2.y = info["player_2_y"]; player_2.rect.y = info["player_2_y"]
+        player_2.direction = info["player_2_direction"]; player_2.last_direction = info["player_2_last_direction"]
+        player_2.jump = info["player_2_jump"]; player_2.on_something = info["player_2_on_something"]
+
+
+        if (((player_2.x - info["player_2_x"])**(2) + (player_2.y - info["player_2_y"])**(2))**(1/2)) < 20:
+            player_2.coordinates_synced_online = True
+        else:
+            player_2.coordinates_synced_online = False
+            player_2.x = info["player_2_x"]; player_2.y = info["player_2_y"]
+
+
+
+    except:
+        print("Error while sending/receiving data to/from the host")
+
+
+    try: 
+        msg = json.dumps(data)
+        connection.send(msg.encode("utf-8"))
+    except:
+        print("Error while sending data to the client")
+
+
         
 
 
