@@ -9,6 +9,7 @@ class text:
 
         self.text = self.font.render(text, True, colour)
 
+
     def display_text(self, screen):
         screen.blit(self.text, (self.x, self.y))
 

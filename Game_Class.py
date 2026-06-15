@@ -12,9 +12,7 @@ class Game:
 
         self.mode = "menu"
 
-        self.modes = ["game: running", "game: experiment failed", "game: end", "menu", "online", "online: host or join", "online: host", "online: join", "credits"]
-
-        self.online_mode = None #can be either join or host
+        self.modes = ["game: running", "game: experiment failed", "game: end", "menu", "online", "online: host or join", "online: host", "online: join - write ip" "online: join", "credits"]
 
         self.time = None
         self.time_running = False
