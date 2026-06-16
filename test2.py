@@ -385,7 +385,8 @@ def text_box_effects():
 
         except:
             ip_input.finished_writing == False
-            print("error while connecting to the host")
+        
+        print("error while connecting to the host")
 
 
 def failed_or_not():

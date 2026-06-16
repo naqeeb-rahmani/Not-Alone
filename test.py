@@ -373,7 +373,7 @@ def text_box_effects():
         try:
 
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client.connect(ADDRESS)
+            client.connect(("".join(ip_input.text_list), PORT))
 
 
             #client.setblocking(False) 
