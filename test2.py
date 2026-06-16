@@ -11,6 +11,10 @@ from Menu_Button_Class import *
 from Background_Class import *
 from GUI import *
 
+####################CHANGING THE FPS IN ONLINE TO GET RID OF THE SLOWMO FEELING#######################
+
+
+
 #setting up the sockets
 
 IP = socket.gethostbyname(socket.gethostname()) #gets your local ip
@@ -333,6 +337,8 @@ def button_effects():
             #connection.setblocking(False)###############################################################
 
             game.mode = "online: host"
+
+            game.fps_online = 240
         
         except:
             print("the port is currently busy :(")
@@ -371,6 +377,8 @@ def text_box_effects():
 
 
             game.mode = "online: join"
+
+            game.fps_online = 240
         except:
             ip_input.finished_writing == False
             print("error while connecting to the host")
@@ -909,7 +917,7 @@ while game.on == True:
         #################################
 
         pygame.display.update()
-        clock.tick(120)
+        clock.tick(game.fps_online)
         for event in pygame.event.get():
 
 
@@ -1091,7 +1099,7 @@ while game.on == True:
         #################################
 
         pygame.display.update()
-        clock.tick(120)
+        clock.tick(game.fps_online)
         for event in pygame.event.get():
 
 
