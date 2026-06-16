@@ -9,11 +9,15 @@ from Text_Class import *
 from UI_Button_Class import *
 from Menu_Button_Class import *
 from Background_Class import *
+from GUI import *
+
+
+
 
 #setting up the sockets
 
 IP = socket.gethostbyname(socket.gethostname()) #gets your local ip
-PORT = 5050 #an empty port which the game will use
+PORT = 6767 #an empty port which the game will use
 
 ADDRESS = (IP, PORT)
 
@@ -284,7 +288,7 @@ def button_effects():
     if to_menu_button.activated == True and game.mode != "menu":
         game.mode = "menu"
 
-    if info_button.activated == True and game.mode == "game: running":
+    if info_button.activated == True and (game.mode == "game: running" or game.mode == "online: join" or game.mode == "online: host"):
         screen.blit(info_surface, (100, 70))
 
         screen.blit(player_1_info_page_sprite, (100, 170))
@@ -316,41 +320,74 @@ def button_effects():
         game.mode = "credits"
         menu_credits_button.activated = False
 
-    if online_host_button.activated == True:
+    if online_host_button.activated == True and game.mode == "online: host or join":
         global connection, server
 
-        game.online_mode = "host"
-        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        server.bind(ADDRESS)
-        server.listen()
+        try:
+            text_host_ip.display_text(screen)
+            pygame.display.update()
+            
+            server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+
+            server.bind(ADDRESS)
+            server.listen()
+            
+            connection, addr = server.accept()
+
+            #connection.setblocking(False)###############################################################
+
+            game.mode = "online: host"
+
+            player_1.speed += 7; player_2.speed += 7 #TESTING############################
+
         
-        connection, addr = server.accept()
+        except:
+            print("the port is currently busy :(")
 
-        connection.setblocking(False)
-
-        game.mode = "online: host"
 
         online_host_button.activated = False
+        
 
-    elif online_join_button.activated == True:
+    elif online_join_button.activated == True and game.mode == "online: host or join":
         global client
 
-        game.online_mode = "join"
-        try:
-            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            client.connect(ADDRESS)
-
-            client.setblocking(False) 
-
-            game.mode = "online: join"
-
-        except: 
-            print("connection failed\nMake sure that someone is hosting on the same network before rejoining")
+        game.mode = "online: join - write ip"
+#       try:
+#            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#            client.connect(ADDRESS)
+#
+#            client.setblocking(False) 
+#
+#            game.mode = "online: join"
+#
+#        except: 
+#            print("connection failed\nMake sure that someone is hosting on the same network before rejoining")
         
         online_join_button.activated = False
 
 
-# experiment failed - player took damage
+def text_box_effects():
+    if ip_input.finished_writing == True:
+        global client
+        try:
+
+            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client.connect(ADDRESS)
+
+
+            #client.setblocking(False) 
+
+
+            game.mode = "online: join"
+
+            player_1.speed += 7; player_2.speed += 7 ##########Testing###############
+
+        except:
+            print("error while connecting to the host")
+        
+        ip_input.finished_writing == False
+
 
 def failed_or_not():
     if player_1.y > 720 or player_1.y < 0 or player_2.y > 720 or player_2.y < 0:
@@ -363,16 +400,11 @@ def camera(player_1, player_2, platforms, horizontally_moving_platforms,SCREEN_W
     middle_xcor = (player_1.x + player_2.x) /2
 
     deadzone = 50
-    global total_camera_offset
-    
-
 
     if (middle_xcor > (((SCREEN_WIDTH)/2) + deadzone)) and game.wall_right.rect.x > 1400:
         move = -5
-        total_camera_offset -= 5
     elif (middle_xcor < (((SCREEN_WIDTH)/2) - deadzone)) and game.wall_left.rect.x < 0:
         move = 5
-        total_camera_offset += 5
     else:
         move = 0
 
@@ -553,10 +585,23 @@ host_button_sprite = pygame.transform.scale(host_button_sprite, (180,160))
 host_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\HostPressed 36x36.png").convert_alpha()
 host_button_pressed_sprite = pygame.transform.scale(host_button_pressed_sprite, (180,160))
 
+#text for showing hosts ip#
+text_host_ip = text(100, 100, f"Ask the other person to write this ip: {IP}", 40, (255,255,255))
+
+#########################33
+
 join_button_sprite = pygame.image.load(r"Assets\User_Interface\Join 36x36.png").convert_alpha()
 join_button_sprite = pygame.transform.scale(join_button_sprite, (180,160))
 join_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\JoinPressed 36x36.png").convert_alpha()
 join_button_pressed_sprite = pygame.transform.scale(join_button_pressed_sprite, (180,160))
+
+#text box for typing the host's ip 
+
+#ip_input_text = text(
+
+ip_input = GUI(440, 300, 400)
+
+#################################
 
 credits_button_sprite = pygame.image.load(r"Assets\User_Interface\Credits 36x36.png").convert_alpha()
 credits_button_sprite = pygame.transform.scale(credits_button_sprite, (180,160))
@@ -618,11 +663,6 @@ def move_credit_texts():
 
 while game.on == True:
 
-    old_total_camera_offset = 0
-    new_total_camera_offset = 0
-
-    total_camera_offset = 0
-
     #resetting the socket variables#
     server = None
     client = None
@@ -673,7 +713,6 @@ while game.on == True:
 
 
     ########################
-    game.online_mode = None
     game.create_and_update_objects(MAP_WIDTH, SCREEN_HEIGHT, coin_spritesheet, small_lever_off_sprite, small_lever_on_sprite, big_lever_off_sprite, big_lever_on_sprite)
     for coins in game.coins:
         coins.get_coin_animation(coin_spritesheet, 14)
@@ -748,10 +787,42 @@ while game.on == True:
                 pygame.quit()
                 exit()
 
+    while game.mode == "online: join - write ip":
+        screen.fill((255,255,255))
+        screen.blit(background_png_original_streched, (0,0))
+
+        for mb in ui_buttons_while_game_end_and_credits:
+            screen.blit(mb.current_sprite, (mb.x, mb.y))
+
+        button_effects()
+
+        text_box_effects()
+
+        ip_input.draw(screen, (255,255,255), (0,0,0))
+
+
+        pygame.display.update()
+        clock.tick(120)
+        for event in pygame.event.get():
+
+            ip_input.inputs(event)
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for mb in ui_buttons_while_game_end_and_credits:
+                        mb.update_sprite() 
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                for mb in ui_buttons_while_game_end_and_credits:
+                    mb.update_sprite_and_state()
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
     while game.mode == "online: host":
         print("hosting")
 
-        send_data_from_host_and_receive(connection, player_1, player_2, interact_button_pressed_online, old_total_camera_offset, new_total_camera_offset)
 
         if game.time_running == False:
             game.start_time = pygame.time.get_ticks(); game.time_running = True
@@ -773,11 +844,9 @@ while game.on == True:
         if game.plate_3.activated == True and  game.lever_5.on != True and  game.lever_6.on == True:
             hint_text.display_text(screen)
 
-        old_total_camera_offset = total_camera_offset
+        
+        send_data_from_host_and_receive(connection, player_1, player_2, interact_button_pressed_online)
 
-        camera(player_1, player_2, game.platforms, game.horizontally_moving_platforms,SCREEN_WIDTH)
-
-        new_total_camera_offset = total_camera_offset
 
         player_1.movemenet_collision_gravity(game.platforms)
         player_1.animation(screen)
@@ -788,13 +857,17 @@ while game.on == True:
 
 
         player_2.animation(screen)
-        player_2.movemenet_collision_gravity(game.platforms)
+        if player_2.coordinates_synced_online:
+            player_2.movemenet_collision_gravity(game.platforms)
+
 
         failed_or_not()
 
         update_pressure_plates()
 
         pressure_plate_and_lever_effects()
+
+        camera(player_1, player_2, game.platforms, game.horizontally_moving_platforms,SCREEN_WIDTH)
 
         print(to_menu_button.activated)
         print(game.mode)
@@ -849,7 +922,7 @@ while game.on == True:
         #################################
 
         pygame.display.update()
-        clock.tick(120)
+        clock.tick(game.fps_online)
         for event in pygame.event.get():
 
 
@@ -908,6 +981,7 @@ while game.on == True:
 
 
 
+
             ######## #ui buttons # ###########
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -931,7 +1005,6 @@ while game.on == True:
     while game.mode == "online: join":
         print("Joined")
 
-        send_data_from_client_and_receive(client, player_1, player_2, game, backgrounds, hint_text)
 
         if game.time_running == False:
             game.start_time = pygame.time.get_ticks(); game.time_running = True
@@ -953,8 +1026,13 @@ while game.on == True:
         if game.plate_3.activated == True and  game.lever_5.on != True and  game.lever_6.on == True:
             hint_text.display_text(screen)
 
+        
+        send_data_from_client_and_receive(client, player_1, player_2, game)
 
-        player_1.movemenet_collision_gravity(game.platforms)
+
+        if player_1.coordinates_synced_online:
+            player_1.movemenet_collision_gravity(game.platforms)
+
         player_1.animation(screen)
 
 
@@ -971,7 +1049,7 @@ while game.on == True:
 
         pressure_plate_and_lever_effects()
 
-        #camera(player_1, player_2, game.platforms, game.horizontally_moving_platforms,SCREEN_WIDTH)
+        camera(player_1, player_2, game.platforms, game.horizontally_moving_platforms,SCREEN_WIDTH)
 
         print(to_menu_button.activated)
         print(game.mode)
@@ -1026,7 +1104,7 @@ while game.on == True:
         #################################
 
         pygame.display.update()
-        clock.tick(120)
+        clock.tick(game.fps_online)
         for event in pygame.event.get():
 
 
@@ -1045,14 +1123,13 @@ while game.on == True:
                 #move
                 if event.key == pygame.K_d: player_2.direction = None; player_2.last_direction = "Right"
                 if event.key == pygame.K_a: player_2.direction = None; player_2.last_direction = "Left"
-        
-                                
                 
                 
                 #jump
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_w: 
                     player_2.jump_pressed = False
+
 
 
 
@@ -1068,48 +1145,6 @@ while game.on == True:
                 for b in ui_buttons_while_game:
                     b.update_sprite_and_state()
 
-
-
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-
-
-
-    while game.mode == "game: end":
-
-        if game.time_running == True:
-            game.time_running = False
-            game.end_time = pygame.time.get_ticks()
-            game.time  = (game.end_time - game.start_time)//1000 #in seconds
-            ending_time = text(350, 350, f"Time: {game.time} seconds or around {(game.time)//60} minute(s)", 30, (255,255,255))
- 
-
-        screen.fill((0,0,0))
-
-        good_ending_text_1.display_text(screen)
-
-        ending_time.display_text(screen)
-
-        for b in ui_buttons_while_game_end_and_credits:
-            screen.blit(b.current_sprite, (b.x, b.y))
-
-        button_effects()
-
-
-        pygame.display.update()
-
-        for event in pygame.event.get():
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                if pygame.mouse.get_pressed()[0]:
-                    for b in ui_buttons_while_game_end_and_credits:
-                        b.update_sprite()
-            
-            if event.type == pygame.MOUSEBUTTONUP:
-                #if pygame.mouse.get_pressed()[0]:
-                for b in ui_buttons_while_game_end_and_credits:
-                    b.update_sprite_and_state()
 
 
             if event.type == pygame.QUIT:

@@ -339,12 +339,14 @@ def button_effects():
 
             game.mode = "online: host"
 
+            player_1.speed += 7; player_2.speed += 7 #TESTING#
+
         
         except:
-            print("the port is currently busy :(")
+            print("the address is busy at the moment :(")
 
 
-            online_host_button.activated = False
+        online_host_button.activated = False
         
 
     elif online_join_button.activated == True and game.mode == "online: host or join":
@@ -378,6 +380,8 @@ def text_box_effects():
 
 
             game.mode = "online: join"
+
+            player_1.speed += 7; player_2.speed += 7 #TESTING#
 
         except:
             ip_input.finished_writing == False
