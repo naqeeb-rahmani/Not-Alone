@@ -343,6 +343,7 @@ def button_effects():
             player_1.jump_speed += 3; player_2.jump_speed += 3 
             player_1.fall_speed += 2; player_2.fall_speed += 2
             player_1.gravity += 1; player_2.gravity += 1
+            player_1.jump_height += 5
 
         
         except:
@@ -388,6 +389,7 @@ def text_box_effects():
             player_1.jump_speed += 3; player_2.jump_speed += 3
             player_1.fall_speed += 2; player_2.fall_speed += 2
             player_1.gravity += 1; player_2.gravity += 1
+            player_1.jump_height += 5
 
         except:     
             print("error while connecting to the host")
