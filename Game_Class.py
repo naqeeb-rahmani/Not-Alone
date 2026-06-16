@@ -10,7 +10,7 @@ class Game:
     def __init__(self):
         self.on = True
 
-        self.fps_online = 240 #the fps while in online because on 120 it feels really slow 
+        self.fps_online = 120 #the fps while in online because on 120 it feels really slow 
 
         self.mode = "menu"
 

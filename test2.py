@@ -328,10 +328,19 @@ def button_effects():
             pygame.display.update()
             
             server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            #testing ai solution
+            server.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1) #############################
+    
+
+
             server.bind(ADDRESS)
             server.listen()
             
             connection, addr = server.accept()
+
+            #testing ai solution
+            connection.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1) #############################
 
             #connection.setblocking(False)###############################################################
 
@@ -369,6 +378,10 @@ def text_box_effects():
         try:
 
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            #testing ai solution
+            client.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1) ####################################################
+
             client.connect(("".join(ip_input.text_list), PORT))
 
             #client.setblocking(False) 
