@@ -339,7 +339,10 @@ def button_effects():
 
             game.mode = "online: host"
 
-            player_1.speed += 7; player_2.speed += 7 #TESTING#
+            player_1.speed += 5; player_2.speed += 5 #TESTING#
+            player_1.jump_speed += 3; player_2.jump_speed += 3 
+            player_1.fall_speed += 2; player_2.fall_speed += 2
+            player_1.gravity += 1; player_2.gravity += 1
 
         
         except:
@@ -382,12 +385,14 @@ def text_box_effects():
             game.mode = "online: join"
 
             player_1.speed += 7; player_2.speed += 7 #TESTING#
+            player_1.jump_speed += 3; player_2.jump_speed += 3
+            player_1.fall_speed += 2; player_2.fall_speed += 2
+            player_1.gravity += 1; player_2.gravity += 1
 
-        except:
-            ip_input.finished_writing == False
-        
-        print("error while connecting to the host")
+        except:     
+            print("error while connecting to the host")
 
+        ip_input.finished_writing == False
 
 def failed_or_not():
     if player_1.y > 720 or player_1.y < 0 or player_2.y > 720 or player_2.y < 0:
