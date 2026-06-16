@@ -11,7 +11,6 @@ from Menu_Button_Class import *
 from Background_Class import *
 from GUI import *
 
-####################CHANGING THE FPS IN ONLINE TO GET RID OF THE SLOWMO FEELING#######################
 
 
 
@@ -338,7 +337,6 @@ def button_effects():
 
             game.mode = "online: host"
 
-            game.fps_online = 240
         
         except:
             print("the port is currently busy :(")
@@ -378,7 +376,6 @@ def text_box_effects():
 
             game.mode = "online: join"
 
-            game.fps_online = 240
         except:
             ip_input.finished_writing == False
             print("error while connecting to the host")
