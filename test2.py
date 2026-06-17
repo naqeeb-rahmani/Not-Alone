@@ -339,11 +339,11 @@ def button_effects():
 
             game.mode = "online: host"
 
-            player_1.speed += 5; player_2.speed += 5 #TESTING#
-            player_1.jump_speed += 3; player_2.jump_speed += 3 
-            player_1.fall_speed += 2; player_2.fall_speed += 2
-            player_1.gravity += 1; player_2.gravity += 1
-            player_1.jump_height += 5
+            #player_1.speed += 5; player_2.speed += 5 #TESTING#
+            #player_1.jump_speed += 3; player_2.jump_speed += 3 
+            #player_1.fall_speed += 2; player_2.fall_speed += 2
+            #player_1.gravity += 1; player_2.gravity += 1
+            #player_1.jump_height += 5
 
         
         except:
@@ -385,11 +385,11 @@ def text_box_effects():
 
             game.mode = "online: join"
 
-            player_1.speed += 7; player_2.speed += 7 #TESTING#
-            player_1.jump_speed += 3; player_2.jump_speed += 3
-            player_1.fall_speed += 2; player_2.fall_speed += 2
-            player_1.gravity += 1; player_2.gravity += 1
-            player_1.jump_height += 5
+            #player_1.speed += 7; player_2.speed += 7 #TESTING#
+            #player_1.jump_speed += 3; player_2.jump_speed += 3
+            #player_1.fall_speed += 2; player_2.fall_speed += 2
+            #player_1.gravity += 1; player_2.gravity += 1
+            #player_1.jump_height += 5
 
         except:     
             print("error while connecting to the host")
