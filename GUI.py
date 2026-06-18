@@ -25,7 +25,7 @@ class GUI:
         screen.blit(text, (self.x + 5, self.y))
 
 #the function below needs to be placed in the "for events" loop
-    def inputs(self, event): #only numbers and full stops because the player will only be typing the ip of the host 
+    def inputs(self, event): #only numbers and full stops because the player will only be typing the host's IP address
         if event.type == pygame.KEYDOWN:
             if len(self.text_list) < 15:
                 if event.unicode.isdigit():

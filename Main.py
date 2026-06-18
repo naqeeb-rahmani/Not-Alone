@@ -52,7 +52,6 @@ pygame.init()
 
 
 #p1_interact_button = E 
-#p2_interact_button = RETURN 
 
 
 #screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEEN_HEIGHT), pygame.FULLSCREEN)
@@ -356,16 +355,6 @@ def button_effects():
         global client
 
         game.mode = "online: join - write ip"
-#       try:
-#            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#            client.connect(ADDRESS)
-#
-#            client.setblocking(False) 
-#
-#            game.mode = "online: join"
-#
-#        except: 
-#            print("connection failed\nMake sure that someone is hosting on the same network before rejoining")
         
         online_join_button.activated = False
 
@@ -665,7 +654,7 @@ credit_texts = [credit_text_1, credit_text_2, credit_text_3, credit_text_4, cred
 
 def move_credit_texts():
     for c_t in credit_texts:
-        c_t.y -= 0.5#; c_t.rect.y = c_t.y
+        c_t.y -= 0.5
         if c_t.y < 300:
             c_t.y = 880
 
@@ -673,12 +662,13 @@ def move_credit_texts():
 
 while game.on == True:
 
-    #resetting part of the info page text which gets changed based on game mode#
+    #resetting parts of the info page text which gets changed based on game mode#
     info_page_text_20 = text(400, 520, "Up Arrow - Jump", 15, (100,170,50))
-
     info_page_text_21 = text(400, 550, "Left Arrow - Left", 15, (100,170,50))
-
     info_page_text_22 = text(400, 580, "Right Arrow - Right", 15, (100,170,50))
+
+    info_page_text[19] = info_page_text_20; info_page_text[20] = info_page_text_21; info_page_text[21] = info_page_text_22
+
 
     #resetting the socket variables#
     server = None
@@ -740,8 +730,6 @@ while game.on == True:
 
     while game.mode == "menu":
 
-        #screen.fill((255,255,255))
-
         screen.blit(menu_bg, (0,0))
 
         for mb in menu_buttons:
@@ -750,7 +738,7 @@ while game.on == True:
         button_effects()
 
         pygame.display.update()
-        clock.tick(120)
+        clock.tick(game.fps_menus)
 
 
         for event in pygame.event.get():
@@ -791,7 +779,7 @@ while game.on == True:
         button_effects()
 
         pygame.display.update()
-        clock.tick(120)
+        clock.tick(game.fps_menus)
         for event in pygame.event.get():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
@@ -829,7 +817,7 @@ while game.on == True:
 
 
         pygame.display.update()
-        clock.tick(120)
+        clock.tick(game.fps_menus)
         for event in pygame.event.get():
 
             ip_input.inputs(event)
@@ -1275,7 +1263,7 @@ while game.on == True:
         #################################
 
         pygame.display.update()
-        clock.tick(120)
+        clock.tick(game.fps)
         for event in pygame.event.get():
 
 
@@ -1444,7 +1432,7 @@ while game.on == True:
             alarm_on = True
 
         pygame.display.update()
-        clock.tick(120)
+        clock.tick(game.fps_menus)
 
         for event in pygame.event.get():
 
@@ -1480,7 +1468,7 @@ while game.on == True:
         button_effects()
 
         pygame.display.update()
-        clock.tick(120)
+        clock.tick(game.fps_menus)
 
         for event in pygame.event.get():
 
