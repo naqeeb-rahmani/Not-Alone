@@ -11,6 +11,8 @@ class player:
 
         self.speed = 5
 
+        self.speed_per_second = self.speed * 120 
+
         self.jump = False
 
         self.jump_pressed = False

@@ -12,6 +12,8 @@ class Game:
 
         self.fps_online = 120 #the fps while in online because on 120 it feels really slow 
 
+        self.delta_time = None
+
         self.mode = "menu"
 
         self.modes = ["game: running", "game: experiment failed", "game: end", "menu", "online", "online: host or join", "online: host", "online: join - write ip" "online: join", "credits"]
@@ -21,6 +23,8 @@ class Game:
 
         self.start_time = None
         self.end_time = None
+
+        
 
 
 
