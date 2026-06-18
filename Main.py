@@ -298,8 +298,6 @@ def button_effects():
 
         screen.blit(small_lever_off_sprite, (800, 100))
 
-        #pygame.draw.rect(screen, (0,0,0), pygame.Rect(950, 70, 10, 130))
-
         screen.blit(big_lever_off_sprite, (1000, 92))
 
         pygame.draw.rect(screen, (0,0,0), pygame.Rect(720, 390, 460, 10))
@@ -369,9 +367,6 @@ def text_box_effects():
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
             client.connect(("".join(ip_input.text_list), PORT))
-
-            #client.setblocking(False) 
-
 
             game.mode = "online: join"
 
