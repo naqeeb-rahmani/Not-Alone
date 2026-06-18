@@ -346,8 +346,7 @@ def button_effects():
 
         
         except:
-            print("the address is busy at the moment :(")
-
+            pass
 
         
 
@@ -383,7 +382,7 @@ def text_box_effects():
             player_1.jump_height += 2.5
 
         except:     
-            print("error while connecting to the host")
+            pass
 
         
 
@@ -836,7 +835,6 @@ while game.on == True:
                 exit()
 
     while game.mode == "online: host":
-        print("hosting")
 
 
         if game.time_running == False:
@@ -883,9 +881,6 @@ while game.on == True:
         pressure_plate_and_lever_effects()
 
         camera(player_1, player_2, game.platforms, game.horizontally_moving_platforms,SCREEN_WIDTH)
-
-        print(to_menu_button.activated)
-        print(game.mode)
 
         ##################################
 
@@ -1018,8 +1013,6 @@ while game.on == True:
 
 
     while game.mode == "online: join":
-        print("Joined")
-
 
         if game.time_running == False:
             game.start_time = pygame.time.get_ticks(); game.time_running = True
@@ -1065,9 +1058,6 @@ while game.on == True:
         pressure_plate_and_lever_effects()
 
         camera(player_1, player_2, game.platforms, game.horizontally_moving_platforms,SCREEN_WIDTH)
-
-        print(to_menu_button.activated)
-        print(game.mode)
 
         ##################################
 
@@ -1209,9 +1199,6 @@ while game.on == True:
         pressure_plate_and_lever_effects()
 
         camera(player_1, player_2, game.platforms, game.horizontally_moving_platforms,SCREEN_WIDTH)
-
-        print(to_menu_button.activated)
-        print(game.mode)
 
         ##################################
 
