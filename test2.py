@@ -323,6 +323,8 @@ def button_effects():
     if online_host_button.activated == True and game.mode == "online: host or join":
         global connection, server
 
+        online_host_button.activated = False
+
         try:
             text_host_ip.display_text(screen)
             pygame.display.update()
@@ -334,8 +336,6 @@ def button_effects():
             
             connection, addr = server.accept()
 
-
-            #connection.setblocking(False)###############################################################
 
             game.mode = "online: host"
 
@@ -350,7 +350,6 @@ def button_effects():
             print("the address is busy at the moment :(")
 
 
-        online_host_button.activated = False
         
 
     elif online_join_button.activated == True and game.mode == "online: host or join":
@@ -374,6 +373,9 @@ def button_effects():
 def text_box_effects():
     if ip_input.finished_writing == True:
         global client
+
+        ip_input.finished_writing == False
+
         try:
 
             client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -394,7 +396,7 @@ def text_box_effects():
         except:     
             print("error while connecting to the host")
 
-        ip_input.finished_writing == False
+        
 
 def failed_or_not():
     if player_1.y > 720 or player_1.y < 0 or player_2.y > 720 or player_2.y < 0:
@@ -604,7 +606,8 @@ join_button_pressed_sprite = pygame.transform.scale(join_button_pressed_sprite, 
 
 #text box for typing the host's ip 
 
-#ip_input_text = text(
+ip_input_text = text(100, 100, "Write the host's IP below (press Enter to continue):", 40, (255,255,255))
+ip_input_text1 = text(60, 370, "NOTE: Before joining, please make sure that both of you are connected to the same network.", 25, (255,255,255))
 
 ip_input = GUI(440, 300, 400)
 
@@ -669,6 +672,13 @@ def move_credit_texts():
 ################################################################
 
 while game.on == True:
+
+    #resetting part of the info page text which gets changed based on game mode#
+    info_page_text_20 = text(400, 520, "Up Arrow - Jump", 15, (100,170,50))
+
+    info_page_text_21 = text(400, 550, "Left Arrow - Left", 15, (100,170,50))
+
+    info_page_text_22 = text(400, 580, "Right Arrow - Right", 15, (100,170,50))
 
     #resetting the socket variables#
     server = None
@@ -761,6 +771,11 @@ while game.on == True:
 
     while game.mode == "online: host or join":
 
+        info_page_text_20 = text(400, 520, "W - Jump", 15, (100,170,50))
+        info_page_text_21 = text(400, 550, "A - Left", 15, (100,170,50))
+        info_page_text_22 = text(400, 580, "D - Right", 15, (100,170,50))
+
+
         screen.fill((255,255,255))
         screen.blit(background_png_original_streched, (0,0))
 
@@ -806,6 +821,9 @@ while game.on == True:
         text_box_effects()
 
         ip_input.draw(screen, (255,255,255), (0,0,0))
+
+        ip_input_text.display_text(screen)
+        ip_input_text1.display_text(screen)
 
 
         pygame.display.update()

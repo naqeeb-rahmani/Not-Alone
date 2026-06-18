@@ -30,6 +30,7 @@ class GUI:
             if len(self.text_list) < 15:
                 if event.unicode.isdigit():
                     self.text_list.append(str(event.unicode))
+                    self.finished_writing = False
 
                 if event.key == pygame.K_PERIOD:
                     self.text_list.append(".")
