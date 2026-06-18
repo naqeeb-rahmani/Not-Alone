@@ -775,6 +775,8 @@ while game.on == True:
         info_page_text_21 = text(400, 550, "A - Left", 15, (100,170,50))
         info_page_text_22 = text(400, 580, "D - Right", 15, (100,170,50))
 
+        info_page_text[19] = info_page_text_20; info_page_text[20] = info_page_text_21; info_page_text[21] = info_page_text_22
+
 
         screen.fill((255,255,255))
         screen.blit(background_png_original_streched, (0,0))
