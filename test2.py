@@ -526,7 +526,7 @@ info_page_text_34 = text(780, 500, "- Activating certain levers + a pressure pla
 info_page_text_35 = text(780, 530, "- Activating certain levers + having collected", 15, (255,255,255))
 info_page_text_36 = text(790, 550, " a certain amount of coins", 15, (255,255,255))
 #####
-info_page_text = [info_page_text_1, info_page_text_2, info_page_text_3, info_page_text_4, info_page_text_5, info_page_text_5, info_page_text_6, info_page_text_7, info_page_text_8, info_page_text_9,
+info_page_text = [info_page_text_1, info_page_text_2, info_page_text_3, info_page_text_4, info_page_text_5, info_page_text_6, info_page_text_7, info_page_text_8, info_page_text_9,
 info_page_text_10, info_page_text_11, info_page_text_12, info_page_text_13, info_page_text_14, info_page_text_15, info_page_text_16, info_page_text_17, info_page_text_18, info_page_text_19,
 info_page_text_20, info_page_text_21, info_page_text_22, info_page_text_23, info_page_text_24, info_page_text_25, info_page_text_26, info_page_text_27, info_page_text_28, info_page_text_29,
 info_page_text_30, info_page_text_31, info_page_text_32, info_page_text_33, info_page_text_34, info_page_text_35, info_page_text_36]
