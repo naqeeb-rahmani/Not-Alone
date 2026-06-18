@@ -2,7 +2,7 @@ Hi there!
 
 Before you open this game there are some things that you should now
 - Online only works if both the host and the person joining are connected to the same internet
-- You might experience jitter/lag based on your internet connection or not at all
+- You might experience jitter/lag based on your internet connection while in online.
 
 Most important:
 - The game freezes completely when you click on host in the online menu, the reason for that is that the program looks for incomming connections and doesn't do anything else
