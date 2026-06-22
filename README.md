@@ -10,7 +10,3 @@ till someone connects.
 - If you know that someone will be joining then you won't need to worry because the game will unfreeze and start as soon as someone join, but please don't select host in online
 if you know that noone will be joining because that'll just freeze your game and you'll get a windows popup that python isnt responding and you will have to close the game.
 
-
-SYSTEM REQUIREMENTS
-- you need to have python and pygame installed on your computer.
-  
