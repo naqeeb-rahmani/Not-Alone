@@ -1,4 +1,4 @@
-import pygame, json, socket
+import pygame, json, socket, threading
 from Player_Class import *
 from Platform_Class import *
 from Pressure_Plates_Class import *
@@ -10,6 +10,7 @@ from UI_Button_Class import *
 from Menu_Button_Class import *
 from Background_Class import *
 from GUI import *
+
 
 
 
