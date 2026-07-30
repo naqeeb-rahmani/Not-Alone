@@ -374,6 +374,3 @@ def send_data_from_host_and_receive(connection, player_1, player_2, i):
         print("Error while sending data to the client")
 
 
-        
-
-

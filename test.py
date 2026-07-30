@@ -204,6 +204,12 @@ def update_pressure_plates():
                 pressure_plate.y -= 0.5; pressure_plate.rect.y = pressure_plate.y
 
 
+def WaitForConnection():
+    global connection, addr
+    connection, addr = server.accept()
+
+    if game.mode == "online: host or join":
+        game.mode = "online: host"
 
 
         
@@ -319,7 +325,7 @@ def button_effects():
     if online_host_button.activated == True and game.mode == "online: host or join":
         global connection, server
 
-        online_host_button.activated = False
+        #online_host_button.activated = False
 
         try:
             text_host_ip.display_text(screen)
@@ -330,10 +336,7 @@ def button_effects():
             server.bind(ADDRESS)
             server.listen()
             
-            connection, addr = server.accept()
-
-
-            game.mode = "online: host"
+            threading.Thread(target=WaitForConnection).start()
 
             player_1.speed += 2.5; player_2.speed += 2.5 #TESTING#
             player_1.jump_speed += 2; player_2.jump_speed += 2

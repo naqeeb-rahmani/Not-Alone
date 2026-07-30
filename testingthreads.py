@@ -29,12 +29,13 @@ def connect():
 threading.Thread(target=connect).start()
 
 while True:
-    os.system('cls')
+    os.system("cls")
 
     if break_loop:
         break
     else:
         print("waiting for connection")
+
 
     
     
