@@ -66,6 +66,7 @@ player_1 = player("player_1", 400, 350, False, player_1_jump_sound)
 player_2_jump_sound = pygame.mixer.Sound(r"Assets\Audio\JumpSound\Player2JumpSound.mp3")
 player_2 = player("player_2", 500, 350, True, player_2_jump_sound)
 player_2.speed = 6.7
+player_2.speed_per_second = player_2.speed * 120
 player_2.jump_height = 170
 
 
@@ -338,7 +339,7 @@ def button_effects():
             
             threading.Thread(target=WaitForConnection).start()
 
-            player_1.speed += 2.5; player_2.speed += 2.5 #TESTING#
+            #player_1.speed += 2.5; player_2.speed += 2.5 #TESTING#
             player_1.jump_speed += 2; player_2.jump_speed += 2
             player_1.fall_speed += 0.5; player_2.fall_speed += 0.5
             player_1.gravity += 0.25; player_2.gravity += 0.25
@@ -372,7 +373,7 @@ def text_box_effects():
 
             game.mode = "online: join"
 
-            player_1.speed += 2.5; player_2.speed += 2.5 #TESTING#
+            #player_1.speed += 2.5; player_2.speed += 2.5 #TESTING#
             player_1.jump_speed += 2; player_2.jump_speed += 2
             player_1.fall_speed += 0.5; player_2.fall_speed += 0.5
             player_1.gravity += 0.25; player_2.gravity += 0.25
@@ -680,6 +681,7 @@ while game.on == True:
 
     player_2 = player("player_2", 500, 350, True, player_2_jump_sound)
     player_2.speed = 6.7
+    player_2.speed_per_second = player_2.speed * 120
     player_2.jump_height = 170
 
     get_player_anims()
@@ -832,6 +834,8 @@ while game.on == True:
                 exit()
 
     while game.mode == "online: host":
+
+        starttime = pygame.time.get_ticks() / 1000
 
 
         if game.time_running == False:
@@ -1006,10 +1010,17 @@ while game.on == True:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+        
+        deltatime = (pygame.time.get_ticks() / 1000) - starttime
+
+        player_1.update_speed_online(deltatime)
+        player_2.update_speed_online(deltatime)
 
 
 
     while game.mode == "online: join":
+
+        starttime = pygame.time.get_ticks() / 1000
 
         if game.time_running == False:
             game.start_time = pygame.time.get_ticks(); game.time_running = True
@@ -1153,6 +1164,10 @@ while game.on == True:
                 pygame.quit()
                 exit()
 
+        deltatime = (pygame.time.get_ticks() / 1000) - starttime
+
+        player_1.update_speed_online(deltatime)
+        player_2.update_speed_online(deltatime)
 
 
     while game.mode == "game: running":

@@ -264,5 +264,10 @@ class player:
                     self.coins_collected += 1
                     coins.remove(coin)
             
+    def update_speed_online(self, deltatime):
+        self.speed = deltatime * self.speed_per_second
+        
+        
+        
 
 
