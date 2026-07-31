@@ -19,6 +19,7 @@ class player:
 
         self.jump_height = 150
         self.jump_speed = 5
+        self.jump_speed_per_second = self.jump_speed * 120
         self.jump_start_saved = False
         self.jump_start = None
 
@@ -266,6 +267,10 @@ class player:
             
     def update_speed_online(self, deltatime):
         self.speed = deltatime * self.speed_per_second
+
+        self.jump_speed = deltatime * self.jump_speed_per_second
+        
+
         
         
         

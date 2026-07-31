@@ -340,7 +340,7 @@ def button_effects():
             threading.Thread(target=WaitForConnection).start()
 
             #player_1.speed += 2.5; player_2.speed += 2.5 #TESTING#
-            player_1.jump_speed += 2; player_2.jump_speed += 2
+            #player_1.jump_speed += 2; player_2.jump_speed += 2
             player_1.fall_speed += 0.5; player_2.fall_speed += 0.5
             player_1.gravity += 0.25; player_2.gravity += 0.25
             player_1.jump_height += 2.5
@@ -374,7 +374,7 @@ def text_box_effects():
             game.mode = "online: join"
 
             #player_1.speed += 2.5; player_2.speed += 2.5 #TESTING#
-            player_1.jump_speed += 2; player_2.jump_speed += 2
+            #player_1.jump_speed += 2; player_2.jump_speed += 2
             player_1.fall_speed += 0.5; player_2.fall_speed += 0.5
             player_1.gravity += 0.25; player_2.gravity += 0.25
             player_1.jump_height += 2.5
