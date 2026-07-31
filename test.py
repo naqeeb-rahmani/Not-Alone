@@ -353,6 +353,8 @@ def button_effects():
     elif online_join_button.activated == True and game.mode == "online: host or join":
         global client
 
+        ip_input.text_list = [] # resetting the list because otherwise the player cannot change the ip, if they have inputted and connected once 
+
         game.mode = "online: join - write ip"
         
         online_join_button.activated = False
