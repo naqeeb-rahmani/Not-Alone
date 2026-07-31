@@ -564,19 +564,19 @@ ui_buttons_while_menu = []
 
 menu_bg = pygame.image.load(r"Assets\User_Interface\MenuBackground.png").convert_alpha()
 
-play_button_sprite = pygame.image.load(r"Assets\User_Interface\Play 36x36.png").convert_alpha()
+play_button_sprite = pygame.image.load(r"Assets\User_Interface\Play 32x32.png").convert_alpha()
 play_button_sprite = pygame.transform.scale(play_button_sprite, (180,160))
-play_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\PlayPressed 36x36.png").convert_alpha()
+play_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\PlayPressed 32x32.png").convert_alpha()
 play_button_pressed_sprite = pygame.transform.scale(play_button_pressed_sprite, (180,160))
 
-online_button_sprite = pygame.image.load(r"Assets\User_Interface\Online 36x36.png").convert_alpha()
+online_button_sprite = pygame.image.load(r"Assets\User_Interface\Online 32x32.png").convert_alpha()
 online_button_sprite = pygame.transform.scale(online_button_sprite, (180,160))
-online_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\OnlinePressed 36x36.png").convert_alpha()
+online_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\OnlinePressed 32x32.png").convert_alpha()
 online_button_pressed_sprite = pygame.transform.scale(online_button_pressed_sprite, (180,160))
 
-host_button_sprite = pygame.image.load(r"Assets\User_Interface\Host 36x36.png").convert_alpha()
+host_button_sprite = pygame.image.load(r"Assets\User_Interface\Host 32x32.png").convert_alpha()
 host_button_sprite = pygame.transform.scale(host_button_sprite, (180,160))
-host_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\HostPressed 36x36.png").convert_alpha()
+host_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\HostPressed 32x32.png").convert_alpha()
 host_button_pressed_sprite = pygame.transform.scale(host_button_pressed_sprite, (180,160))
 
 #text for showing hosts ip#
@@ -584,9 +584,9 @@ text_host_ip = text(100, 100, f"Ask the other person to write this ip: {IP}", 40
 
 #########################33
 
-join_button_sprite = pygame.image.load(r"Assets\User_Interface\Join 36x36.png").convert_alpha()
+join_button_sprite = pygame.image.load(r"Assets\User_Interface\Join 32x32.png").convert_alpha()
 join_button_sprite = pygame.transform.scale(join_button_sprite, (180,160))
-join_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\JoinPressed 36x36.png").convert_alpha()
+join_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\JoinPressed 32x32.png").convert_alpha()
 join_button_pressed_sprite = pygame.transform.scale(join_button_pressed_sprite, (180,160))
 
 #text box for typing the host's ip 
@@ -598,9 +598,9 @@ ip_input = GUI(440, 300, 400)
 
 #################################
 
-credits_button_sprite = pygame.image.load(r"Assets\User_Interface\Credits 36x36.png").convert_alpha()
+credits_button_sprite = pygame.image.load(r"Assets\User_Interface\Credits 32x32.png").convert_alpha()
 credits_button_sprite = pygame.transform.scale(credits_button_sprite, (180,160))
-credits_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\CreditsPressed 36x36.png").convert_alpha()
+credits_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\CreditsPressed 32x32.png").convert_alpha()
 credits_button_pressed_sprite = pygame.transform.scale(credits_button_pressed_sprite, (180,160))
 
 menu_play_button = menu_button(530, 350, play_button_sprite, play_button_pressed_sprite)

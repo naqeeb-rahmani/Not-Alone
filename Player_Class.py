@@ -1,278 +1,1484 @@
-import pygame
-
-class player: 
-    def __init__(self, name, x, y, can_collect_coins, jump_sound):
-
-        self.coordinates_synced_online = True
-
-        self.ms = 0 #for animations because each function runs 120/second and the animations between 6-10 incl. 6 and 10
-
-        self.name = name
-
-        self.speed = 5
-
-        self.speed_per_second = self.speed * 120 
-
-        self.jump = False
-
-        self.jump_pressed = False
-
-        self.jump_height = 150
-        self.jump_speed = 5
-        self.jump_speed_per_second = self.jump_speed * 120
-        self.jump_start_saved = False
-        self.jump_start = None
-
-        self.jump_sound = jump_sound
-        self.jump_sound_on = False
-
-        self.can_collect_coins = can_collect_coins
-
-        self.coins_collected = 0
-
-
-        self.collided_with_completion_rect = False #to check if the player has reached the end of the level
+import pygame, json, socket, threading
+from Player_Class import *
+from Platform_Class import *
+from Pressure_Plates_Class import *
+from Lever_Class import *
+from Coin_Class import *
+from Game_Class import *
+from Text_Class import *
+from UI_Button_Class import *
+from Menu_Button_Class import *
+from Background_Class import *
+from GUI import *
 
 
 
-        self.animations = {
-            "idle": {
-                "frames": {
-                    "right": [],
-                    "left" : []
-                },
-                "number of frames": 10
-                },
 
-            "walk" : {
-                "frames": {
-                    "right" : [],
-                    "left" : []
-                },
-                "number of frames": 8
-            },
 
-            "run" : {
-                "frames" : {
-                    "right" : [],
-                    "left" : []
-                },
-                "number of frames": 8
-            },
+#setting up the sockets
 
-            "jump" : {
-                "frames": {
-                    "right" : [],
-                    "left" : []
-                },
-                "number of frames": 6
-            },
+IP = socket.gethostbyname(socket.gethostname()) #gets your local ip
+PORT = 6767 #an empty port which the game will use
+
+ADDRESS = (IP, PORT)
+
+######################
+
+
+
+#screen#
+
+SCREEN_WIDTH = 1280
+MAP_WIDTH = 3000 #actually 5000 but the game logic is based on 3000 so i added 2000 in the functions were it is used so it checks the whole map
+SCREEN_HEIGHT = 720
+
+clock = pygame.time.Clock()
+####################
+
+#game name: Not Alone
+#        * But Together
+
+#---------game-variables------------#
+
+
+
+game = Game()
+
+
+#-----------------------------------#
+
+pygame.init()
+
+
+#p1_interact_button = E 
+
+
+#screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEEN_HEIGHT), pygame.FULLSCREEN)
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+pygame.display.set_caption("Not Alone")
+
+#Players#
+
+player_1_jump_sound = pygame.mixer.Sound(r"Assets\Audio\JumpSound\Player1JumpSound.mp3")
+player_1 = player("player_1", 400, 350, False, player_1_jump_sound)
+
+
+player_2_jump_sound = pygame.mixer.Sound(r"Assets\Audio\JumpSound\Player2JumpSound.mp3")
+player_2 = player("player_2", 500, 350, True, player_2_jump_sound)
+player_2.speed = 6.7
+player_2.speed_per_second = player_2.speed * 120
+player_2.jump_height = 170
+
+
+#  saving the animations  #
+
+#player 1
+
+player_1_idle_spritesheet_right = pygame.image.load("Assets\Player_Sprites\Player_1\PlayerIdleRight 48x48.png").convert_alpha()
+player_1_idle_spritesheet_left = pygame.image.load("Assets\Player_Sprites\Player_1\PlayerIdleLeft 48x48.png").convert_alpha()
+
+###
+
+player_1_walk_spritesheet_right = pygame.image.load("Assets\Player_Sprites\Player_1\PlayerWalkRight 48x48.png").convert_alpha()
+player_1_walk_spritesheet_left = pygame.image.load("Assets\Player_Sprites\Player_1\PlayerWalkLeft 48x48.png").convert_alpha()
+
+###
+
+player_1_land_spritesheet_right = pygame.image.load("Assets\Player_Sprites\Player_1\PlayerLandRight 48x48.png").convert_alpha()
+player_1_land_spritesheet_left = pygame.image.load("Assets\Player_Sprites\Player_1\PlayerLandLeft 48x48.png").convert_alpha()
+
+player_1_jump_spritesheet_right = pygame.image.load("Assets\Player_Sprites\Player_1\PlayerJumpRight 48x48.png").convert_alpha()
+player_1_jump_spritesheet_left = pygame.image.load("Assets\Player_Sprites\Player_1\PlayerJumpLeft 48x48.png").convert_alpha()
+
+#player_2#
+player_2_idle_spritesheet_right = pygame.image.load("Assets\Player_Sprites\Player_2\PlayerIdleRight 48x48.png").convert_alpha()
+player_2_idle_spritesheet_left = pygame.image.load("Assets\Player_Sprites\Player_2\PlayerIdleLeft 48x48.png").convert_alpha()
+
+
+player_2_run_spritesheet_right = pygame.image.load("Assets\Player_Sprites\Player_2\PlayerRunRight 48x48.png").convert_alpha()
+player_2_run_spritesheet_left = pygame.image.load("Assets\Player_Sprites\Player_2\PlayerRunLeft 48x48.png").convert_alpha()
+
+###
+
+player_2_jump_spritesheet_right = pygame.image.load("Assets\Player_Sprites\Player_2\PlayerJumpRight 48x48.png").convert_alpha()
+player_2_jump_spritesheet_left = pygame.image.load("Assets\Player_Sprites\Player_2\PlayerJumpLeft 48x48.png").convert_alpha()
+
+player_2_land_spritesheet_right = pygame.image.load("Assets\Player_Sprites\Player_2\PlayerLandRight 48x48.png").convert_alpha()
+player_2_land_spritesheet_left = pygame.image.load("Assets\Player_Sprites\Player_2\PlayerLandLeft 48x48.png").convert_alpha()
+
+def get_player_anims():
+    player_1.get_animations("idle", player_1.animations["idle"]["number of frames"], "right", player_1_idle_spritesheet_right)
+    player_1.get_animations("idle", player_1.animations["idle"]["number of frames"], "left", player_1_idle_spritesheet_left)
+    player_1.get_animations("walk", player_1.animations["walk"]["number of frames"], "right", player_1_walk_spritesheet_right)
+    player_1.get_animations("walk", player_1.animations["walk"]["number of frames"], "left", player_1_walk_spritesheet_left)
+    player_1.get_animations("land", player_1.animations["land"]["number of frames"], "right", player_1_land_spritesheet_right)
+    player_1.get_animations("land", player_1.animations["land"]["number of frames"], "left", player_1_land_spritesheet_left)
+    player_1.get_animations("jump", player_1.animations["jump"]["number of frames"], "right", player_1_jump_spritesheet_right)
+    player_1.get_animations("jump", player_1.animations["jump"]["number of frames"], "left", player_1_jump_spritesheet_left)
+
+    player_2.get_animations("idle", player_1.animations["idle"]["number of frames"], "right", player_2_idle_spritesheet_right)
+    player_2.get_animations("idle", player_1.animations["idle"]["number of frames"], "left", player_2_idle_spritesheet_left)
+    player_2.get_animations("run", player_1.animations["run"]["number of frames"], "right", player_2_run_spritesheet_right)
+    player_2.get_animations("run", player_1.animations["run"]["number of frames"], "left", player_2_run_spritesheet_left)
+    player_2.get_animations("jump", player_2.animations["jump"]["number of frames"], "right", player_2_jump_spritesheet_right)
+    player_2.get_animations("jump", player_2.animations["jump"]["number of frames"], "left", player_2_jump_spritesheet_left)
+    player_2.get_animations("land", player_2.animations["land"]["number of frames"], "right", player_2_land_spritesheet_right)
+    player_2.get_animations("land", player_2.animations["land"]["number of frames"], "left", player_2_land_spritesheet_left)
+
+get_player_anims()
+
+#####################################################################
+
+
+#levers#
+
+lever_off_sprite = pygame.image.load("Assets\Map\Lever\LeverOff.png").convert_alpha()
+lever_on_sprite = pygame.image.load("Assets\Map\Lever\LeverOn.png").convert_alpha()
+
+small_lever_off_sprite = pygame.transform.scale(lever_off_sprite, (50, 55))
+small_lever_on_sprite = pygame.transform.scale(lever_on_sprite, (50, 55))
+
+big_lever_off_sprite = pygame.transform.scale(lever_off_sprite, (60, 65))
+big_lever_on_sprite = pygame.transform.scale(lever_on_sprite, (60, 65))
+
+###coins###
+
+coin_spritesheet = pygame.image.load("Assets\Map\Coin\Coin 16x16.png")
+
+#################
+
+
+#to display number of coins#
+
+display_number_of_coins_font = pygame.font.Font("Assets\Font\Grand9K Pixel.ttf", 20)
+
+
+####map####
+
+### background ###
+
+background_png_original = pygame.image.load("Assets\Map\Background\Dungeon_brick_wall_grey.png").convert_alpha()
+background_png_original_streched = pygame.transform.scale(background_png_original, (1500, 920))
+background_png = pygame.transform.scale(background_png_original, (1280, 450))
+
+background_png = background_png; background_png.set_alpha(200)
+
+bg_1 = background(background_png, 0, 0)
+bg_2 = background(background_png, 1280, 0)
+bg_3 = background(background_png, 2560, 0)
+bg_4 = background(background_png, 3840, 0)
+
+
+backgrounds = [bg_1, bg_2, bg_3, bg_4]
+
+
+
+
+
+## ### ##
+
+#game.create_and_update_objects(MAP_WIDTH, SCREEN_HEIGHT, coin_spritesheet, small_lever_off_sprite, small_lever_on_sprite, big_lever_off_sprite, big_lever_on_sprite)
+
+## functions ##
+
+########################
+
+def update_pressure_plates():
+    activated_p_p = None
+
+    for pressure_plate in game.pressure_plates:
+        player_pos = pygame.math.Vector2(player_2.rect.center)
+        plate_pos = pygame.math.Vector2(pressure_plate.rect.center)
+
+        if ((player_2.rect.bottom == pressure_plate.rect.top) and (player_2.on_something == True)) and (player_pos.distance_to(plate_pos) < 100):
+            pressure_plate.activated = True; pressure_plate.colour = (0,0,255)
+        else:
+            pressure_plate.activated = False; pressure_plate.colour = (255,0,0)
+
+
+        if pressure_plate.activated == True:
+            if (pressure_plate.y - pressure_plate.y_unactivated) < 8:
+                pressure_plate.y += 0.5; pressure_plate.rect.y = pressure_plate.y
             
-            "land" : {
-                "frames" : {
-                    "right" : [],
-                    "left" : []
-                },
-                "number of frames": 9
-            }
-
-        }
+        else:
+            if (pressure_plate.y - pressure_plate.y_unactivated) > 0:
+                pressure_plate.y -= 0.5; pressure_plate.rect.y = pressure_plate.y
 
 
-        self.current_anim = None
-        self.last_anim = None
-        self.current_frame_number = 0
-        self.change_anim_after_ms = 0
+def WaitForConnection():
+    global connection, addr
+    connection, addr = server.accept()
+
+    if game.mode == "online: host or join":
+        game.mode = "online: host"
 
 
-        self.on_something = False
+        
 
-        self.fall_speed = 2
-        self.reset_fall_speed = False
-        self.gravity = 0.5
+
+def pressure_plate_and_lever_effects(): #the things they activate
+    if game.platform_2_plate.activated == True or game.lever_1.on == True:
+        if (game.wall_under_platform_2.start_position_y - game.wall_under_platform_2.y) < 150:
+            game.wall_under_platform_2.y -= 5; game.wall_under_platform_2.rect.y = game.wall_under_platform_2.y
+    else:
+        if (game.wall_under_platform_2.start_position_y - game.wall_under_platform_2.y) > 0:
+            game.wall_under_platform_2.y += 5; game.wall_under_platform_2.rect.y = game.wall_under_platform_2.y
+
+    if (game.lever_1.on != True and game.lever_2.on != True and game.lever_3.on == True) or game.plate_2.activated == True:
+        if (game.wall_3_above.start_position_y - game.wall_3_above.y) > -130:
+            game.wall_3_above.y += 5; game.wall_3_above.rect.y = game.wall_3_above.y
+    else:
+        if (game.wall_3_above.start_position_y - game.wall_3_above.y) < 0:
+            game.wall_3_above.y -= 5; game.wall_3_above.rect.y = game.wall_3_above.y
     
-        self.x = x; self.y = y
+    if game.lever_1.on != True and game.lever_2.on == True and game.lever_3.on != True:
+        if (game.platform_6_extension.x - game.platform_6_extension.start_position_x) <= 90:
+            game.platform_6_extension.x += 5; game.platform_6_extension.rect.x = game.platform_6_extension.x
 
-        self.player_offset_rect_x = 43; self.player_offset_rect_y = 30
+            if player_2.rect.colliderect(game.platform_6_extension.rect):
+                player_2.x += 5
+                player_2.rect.x = player_2.x
+            
+            #its pretty much impossible for player_1 to collide with the platform because of its speed and becauce player_1 is the one that activates it 
+            #but i'll still check it just to be safe
+            
+            if player_1.rect.colliderect(game.platform_6_extension.rect):
+                player_1.x += 5
+                player_1.rect.x = player_1.x
+    else:
+        if (game.platform_6_extension.x - game.platform_6_extension.start_position_x) > 0:
+            game.platform_6_extension.x -= 5; game.platform_6_extension.rect.x = game.platform_6_extension.x
+
+    if (game.lever_1.on == True and game.lever_2.on == True and  game.lever_3.on == True) or  game.lever_4.on == True:
+        if (game.wall_4.start_position_y - game.wall_4.y) < 200:
+            game.wall_4.y -= 5; game.wall_4.rect.y = game.wall_4.y
+    else:
+        if  (game.wall_4.start_position_y -  game.wall_4.y) > 0:
+                game.wall_4.y += 5;  game.wall_4.rect.y =  game.wall_4.y
+
+        for player in [player_1, player_2]:
+            if player.rect.colliderect(game.wall_4.rect) and player.rect.bottom >  game.wall_4.rect.bottom:
+                game.mode = "game: experiment failed"
+                
+        
+
+    if  game.plate_3.activated == True and  game.lever_5.on != True and  game.lever_6.on == True:
+        if ( game.wall_5_upper_part.y -  game.wall_5_upper_part.start_position_y) < 200:
+                game.wall_5_upper_part.y += 5;  game.wall_5_upper_part.rect.y =  game.wall_5_upper_part.y
+    else:
+        if ( game.wall_5_upper_part.y -  game.wall_5_upper_part.start_position_y) > 0:
+                game.wall_5_upper_part.y -= 5;  game.wall_5_upper_part.rect.y =  game.wall_5_upper_part.y
+
+    if game.lever_5.on == True and game.lever_6.on != True and game.plate_4.activated == True:
+        if (game.wall_5_under_part.start_position_y - game.wall_5_under_part.y) < 200:
+            game.wall_5_under_part.y -= 5; game.wall_5_under_part.rect.y =  game.wall_5_under_part.y
+    else:
+        if (game.wall_5_under_part.start_position_y - game.wall_5_under_part.y) > 0:
+            game.wall_5_under_part.y += 5; game.wall_5_under_part.rect.y = game.wall_5_under_part.y
+
+    if game.plate_5.activated == True and game.lever_9.on == True and game.lever_8.on != True:
+        if (game.wall_7.start_position_y - game.wall_7.y) < 100:
+            game.wall_7.y -= 5; game.wall_7.rect.y = game.wall_7.y
+        if (game.platform_12.x - game.platform_12.start_position_x) < 150:
+            game.platform_12.x += 7.5; game.platform_12.rect.x = game.platform_12.x
+
+    if ((game.lever_8.on == True) and (game.lever_9.on == True) and (game.lever_10.on == True) and (player_1.coins_collected == len(game.coins)) and (game.plate_5.activated != True) and (game.plate_4.activated != True)) or game.plate_6.activated == True:
+        if (game.wall_6.start_position_y - game.wall_6.y) < 150:
+            game.wall_6.y -= 5; game.wall_6.rect.y = game.wall_6.y
+    else:
+        if (game.wall_6.start_position_y - game.wall_6.y) > 0:
+            game.wall_6.y += 5; game.wall_6.rect.y = game.wall_6.y
+
+def button_effects():
+    if to_menu_button.activated == True and game.mode != "menu":
+        game.mode = "menu"
+
+    if info_button.activated == True and (game.mode == "game: running" or game.mode == "online: join" or game.mode == "online: host"):
+        screen.blit(info_surface, (100, 70))
+
+        screen.blit(player_1_info_page_sprite, (100, 170))
+        pygame.draw.rect(screen, (0,0,0), pygame.Rect(360, 160, 10, 500))
+        screen.blit(player_2_info_page_sprite, (390, 170))
+
+        pygame.draw.rect(screen, (0,0,0), pygame.Rect(710, 70, 10, 620))
+
+        screen.blit(small_lever_off_sprite, (800, 100))
+
+        screen.blit(big_lever_off_sprite, (1000, 92))
+
+        pygame.draw.rect(screen, (0,0,0), pygame.Rect(720, 390, 460, 10))
+
+        for text in info_page_text:
+            text.display_text(screen)
+
+    if menu_play_button.activated == True and game.mode == "menu":
+        game.mode = "game: running"
+        menu_play_button.activated = False
+
+    if menu_online_button.activated == True and game.mode == "menu":
+        game.mode = "online: host or join"
+        menu_online_button.activated = False
+
+    if menu_credits_button.activated == True and game.mode == "menu":
+        game.mode = "credits"
+        menu_credits_button.activated = False
+
+    if online_host_button.activated == True and game.mode == "online: host or join":
+        global connection, server
+
+        #online_host_button.activated = False
+
+        try:
+            text_host_ip.display_text(screen)
+            pygame.display.update()
+            
+            server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            server.bind(ADDRESS)
+            server.listen()
+            
+            threading.Thread(target=WaitForConnection).start()
+
+        
+            player_1.fall_speed += 0.5; player_2.fall_speed += 0.5
+            player_1.gravity += 0.25; player_2.gravity += 0.25
+            player_1.jump_height += 2.5
+
+        
+        except:
+            pass
+
+        
+
+    elif online_join_button.activated == True and game.mode == "online: host or join":
+        global client
+
+        ip_input.text_list = [] # resetting the list because otherwise the player cannot change the ip, if they have inputted and connected once 
+
+        game.mode = "online: join - write ip"
+        
+        online_join_button.activated = False
+
+
+def text_box_effects():
+    if ip_input.finished_writing == True:
+        global client
+
+        ip_input.finished_writing == False
+
+        try:
+
+            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            client.connect(("".join(ip_input.text_list), PORT))
+
+            game.mode = "online: join"
+
+            player_1.fall_speed += 0.5; player_2.fall_speed += 0.5
+            player_1.gravity += 0.25; player_2.gravity += 0.25
+            player_1.jump_height += 2.5
+
+        except:     
+            pass
+
+        
+
+def failed_or_not():
+    if player_1.y > 720 or player_1.y < 0 or player_2.y > 720 or player_2.y < 0:
+        game.mode = "game: experiment failed"
     
-        self.rect = pygame.Rect(self.x,self.y, 55,90)
 
-        self.direction = None #True = Right and False = Left
-        self.last_direction = "right"
+#camera#
+
+def camera(player_1, player_2, platforms, horizontally_moving_platforms,SCREEN_WIDTH):
+    middle_xcor = (player_1.x + player_2.x) /2
+
+    deadzone = 50
+
+    if (middle_xcor > (((SCREEN_WIDTH)/2) + deadzone)) and game.wall_right.rect.x > 1400:
+        move = -5
+    elif (middle_xcor < (((SCREEN_WIDTH)/2) - deadzone)) and game.wall_left.rect.x < 0:
+        move = 5
+    else:
+        move = 0
+
+    for background in backgrounds:
+        background.x += (move * 0.5) # slower movement due to platforms jittering at same speed
+    for platform in game.platforms:
+        platform.x += move
+    for object in game.non_collideable_objects:
+        object.x += move; object.rect.x = object.x
+    for horizontally_moving_platform in game.horizontally_moving_platforms:
+        horizontally_moving_platform.start_position_x += move; horizontally_moving_platform.x += move; horizontally_moving_platform.rect.x = horizontally_moving_platform.x 
+
+    hint_text.x += move
+
+    player_1.x += move; player_1.rect.x = player_1.x
+    player_2.x += move; player_2.rect.x = player_2.x
+
+###### info/controls #######
+info_surface = pygame.Surface((1080, 620)); info_surface.set_alpha(210); info_surface.fill((0,0,0))
+
+player_1_info_page_sprite = player_1.animations["idle"]["frames"]["right"][0]
+
+player_2_info_page_sprite = player_2.animations["idle"]["frames"]["left"][0]
 
 
-    def movemenet_collision_gravity(self, platforms):
-        if self.direction == "Right":
-            self.x += self.speed
-            self.rect.x = self.x
-        elif self.direction == "Left": 
-            self.x -= self.speed
-            self.rect.x = self.x
+#hint text#
 
-        for platform in platforms:
-            if self.rect.colliderect(platform):
+hint_text = text(1780, 30, "BE FAST!", 20, (255,255,255))
+
+
+#player1 info/controls
+
+info_page_text_1 = text(110, 70, "INFORMATION/CONTROLS:", 30, (255,255,255))
+
+info_page_text_2 = text(130, 150, "Player 1", 25, (150,20,150))
+
+info_page_text_3 = text(120, 300, "Stats:", 25, (150,20,150))
+
+info_page_text_4 = text(120, 350, "Speed: 6/10", 15, (150,20,150))
+
+info_page_text_5 = text(120, 380, "Strength: 10/10", 15, (150,20,150))
+
+info_page_text_6 = text(120, 410, "Weight Class: Light", 15, (150,20,150))
+
+info_page_text_7 = text(120, 440, "Can Activate Levers?: Yes", 15, (150,20,150))
+
+info_page_text_8 = text(120, 470, "Controls:", 25, (150,20,150))
+
+info_page_text_9 = text(120, 520, "W - Jump", 15, (150,20,150))
+
+info_page_text_10 = text(120, 550, "A - Left", 15, (150,20,150))
+
+info_page_text_11 = text(120, 580, "D - Right", 15, (150,20,150))
+
+info_page_text_12 = text(120, 610, "E - Interact", 15, (150,20,150))
+#################################
+
+#player2#
+info_page_text_13 = text(410, 150, "Player 2", 25, (100,170,50))
+
+info_page_text_14 = text(400, 300, "Stats:", 25, (100,170,50))
+
+info_page_text_15 = text(400, 350, "Speed: 10/10", 15, (100,170,50))
+
+info_page_text_16 = text(400, 380, "Strength: 5/10", 15, (100,170,50))
+
+info_page_text_17 = text(400, 410, "Weight Class: Heavy", 15, (100,170,50))
+
+info_page_text_18 = text(400, 440, "Can Activate Pressure Plates?: Yes", 15, (100,170,50))
+
+info_page_text_19 = text(400, 470, "Controls:", 25, (100,170,50))
+
+info_page_text_20 = text(400, 520, "Up Arrow - Jump", 15, (100,170,50))
+
+info_page_text_21 = text(400, 550, "Left Arrow - Left", 15, (100,170,50))
+
+info_page_text_22 = text(400, 580, "Right Arrow - Right", 15, (100,170,50))
+
+
+#levers#
+info_page_text_23 = text(750, 70, "Levers:", 25, (150,20,150))
+
+info_page_text_24 = text(760, 170, "- Toggleable", 15, (150,20,150))
+
+info_page_text_25 = text(970, 170, "- Non Toggleable", 15, (150,20,150))
+
+info_page_text_26 = text(820, 200, "Can only be activated by Player 1", 15, (150,20,150))
+
+#pressure plates and coins#
+
+info_page_text_27 = text(750, 250, "Pressure Plates And Coins:", 25, (100,170,50))
+
+info_page_text_28 = text(750, 300, "Can only be activated or collected by Player 2", 15, (100,170,50))
+
+info_page_text_29 = text(750, 330, "For Pressure Plates:", 20, (100,170,50))
+
+info_page_text_30 = text(750, 360, "Red means not activated and blue means activated", 15, (100,170,50))
+
+#######
+#info about passages#
+
+info_page_text_31 = text(750, 400, "How To Open Passages?", 25, (255,255,255))
+
+info_page_text_32 = text(750, 440, "By:", 20, (255,255,255))
+
+info_page_text_33 = text(780, 470, "- Activating certain levers", 15, (255,255,255))
+
+info_page_text_34 = text(780, 500, "- Activating certain levers + a pressure plate", 15, (255,255,255))
+
+info_page_text_35 = text(780, 530, "- Activating certain levers + having collected", 15, (255,255,255))
+info_page_text_36 = text(790, 550, " a certain amount of coins", 15, (255,255,255))
+#####
+info_page_text = [info_page_text_1, info_page_text_2, info_page_text_3, info_page_text_4, info_page_text_5, info_page_text_6, info_page_text_7, info_page_text_8, info_page_text_9,
+info_page_text_10, info_page_text_11, info_page_text_12, info_page_text_13, info_page_text_14, info_page_text_15, info_page_text_16, info_page_text_17, info_page_text_18, info_page_text_19,
+info_page_text_20, info_page_text_21, info_page_text_22, info_page_text_23, info_page_text_24, info_page_text_25, info_page_text_26, info_page_text_27, info_page_text_28, info_page_text_29,
+info_page_text_30, info_page_text_31, info_page_text_32, info_page_text_33, info_page_text_34, info_page_text_35, info_page_text_36]
+
+
+###### ending ###########
+
+#good ending
+good_ending_surface_alpha = 0
+good_ending_surface = pygame.Surface((1280, 720)); good_ending_surface.set_alpha(good_ending_surface_alpha); good_ending_surface.fill((0,0,0))
+
+good_ending_text_1 = text(325, 250, "EXPERIMENT SUCCESFUL", 50, (0,255,0))
+
+
+#############
+
+bad_ending_text_1 = text(500, 150, "0x0000009C", 40, (255,0,0))
+bad_ending_text_2 = text(385, 250, "EXPERIMENT FAILED", 50, (255,0,0))
+
+alarm_sound = pygame.mixer.Sound(r"Assets\Audio\Alarm\freesound_community-emergency-alarm-69780.mp3")
+alarm_on = False
+
+
+###########################
+#button sprites#
+
+to_menu = pygame.image.load(r"Assets\User_Interface\ToMenu 16x16.png").convert_alpha()
+to_menu = pygame.transform.scale(to_menu, (55, 55))
+
+to_menu_pressed = pygame.image.load(r"Assets\User_Interface\ToMenuPressed 16x16.png").convert_alpha()
+to_menu_pressed = pygame.transform.scale(to_menu_pressed, (55, 55))
+
+info = pygame.image.load(r"Assets\User_Interface\Information 16x16.png").convert_alpha()
+info = pygame.transform.scale(info, (55, 55))
+
+info_pressed = pygame.image.load(r"Assets\User_Interface\InformationPressed 16x16.png").convert_alpha()
+info_pressed = pygame.transform.scale(info_pressed, (55, 55))
+
+##########################3
+
+to_menu_button = ui_button(10, 10, to_menu, to_menu_pressed)
+
+info_button = ui_button(80, 10, info, info_pressed)
+
+ui_buttons_while_game = [to_menu_button, info_button]
+ui_buttons_while_game_end_and_credits = [to_menu_button]
+ui_buttons_while_menu = []
+
+#menu#
+
+menu_bg = pygame.image.load(r"Assets\User_Interface\MenuBackground.png").convert_alpha()
+
+play_button_sprite = pygame.image.load(r"Assets\User_Interface\Play 32x32.png").convert_alpha()
+play_button_sprite = pygame.transform.scale(play_button_sprite, (180,160))
+play_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\PlayPressed 32x32.png").convert_alpha()
+play_button_pressed_sprite = pygame.transform.scale(play_button_pressed_sprite, (180,160))
+
+online_button_sprite = pygame.image.load(r"Assets\User_Interface\Online 32x32.png").convert_alpha()
+online_button_sprite = pygame.transform.scale(online_button_sprite, (180,160))
+online_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\OnlinePressed 32x32.png").convert_alpha()
+online_button_pressed_sprite = pygame.transform.scale(online_button_pressed_sprite, (180,160))
+
+host_button_sprite = pygame.image.load(r"Assets\User_Interface\Host 32x32.png").convert_alpha()
+host_button_sprite = pygame.transform.scale(host_button_sprite, (180,160))
+host_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\HostPressed 32x32.png").convert_alpha()
+host_button_pressed_sprite = pygame.transform.scale(host_button_pressed_sprite, (180,160))
+
+#text for showing hosts ip#
+text_host_ip = text(100, 100, f"Ask the other person to write this ip: {IP}", 40, (255,255,255))
+
+#########################33
+
+join_button_sprite = pygame.image.load(r"Assets\User_Interface\Join 32x32.png").convert_alpha()
+join_button_sprite = pygame.transform.scale(join_button_sprite, (180,160))
+join_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\JoinPressed 32x32.png").convert_alpha()
+join_button_pressed_sprite = pygame.transform.scale(join_button_pressed_sprite, (180,160))
+
+#text box for typing the host's ip 
+
+ip_input_text = text(100, 100, "Write the host's IP below (press Enter to continue):", 40, (255,255,255))
+ip_input_text1 = text(60, 370, "NOTE: Before joining, please make sure that both of you are connected to the same network.", 25, (255,255,255))
+
+ip_input = GUI(440, 300, 400)
+
+#################################
+
+credits_button_sprite = pygame.image.load(r"Assets\User_Interface\Credits 32x32.png").convert_alpha()
+credits_button_sprite = pygame.transform.scale(credits_button_sprite, (180,160))
+credits_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\CreditsPressed 32x32.png").convert_alpha()
+credits_button_pressed_sprite = pygame.transform.scale(credits_button_pressed_sprite, (180,160))
+
+menu_play_button = menu_button(530, 350, play_button_sprite, play_button_pressed_sprite)
+
+menu_online_button = menu_button(530, 450, online_button_sprite, online_button_pressed_sprite)
+
+menu_credits_button = menu_button(530, 550, credits_button_sprite, credits_button_pressed_sprite)
+
+online_host_button = menu_button(530, 220, host_button_sprite, host_button_pressed_sprite)
+
+online_join_button = menu_button(530, 370, join_button_sprite, join_button_pressed_sprite)
+
+
+online_buttons = [online_host_button, online_join_button]
+
+menu_buttons = [menu_play_button, menu_online_button, menu_credits_button]
+
+#all buttons
+buttons = [to_menu_button, info_button, menu_play_button, menu_credits_button, online_host_button, online_join_button]
+
+#credits
+credits_bg = pygame.image.load(r"Assets\User_Interface\CreditsBackground.png").convert_alpha()
+
+
+
+
+credit_text_1 = text(550, 400, "CREDITS:", 30,(150,20,150))
+
+credit_text_2 = text(540, 440, "Programming:", 25, (100,170,50))
+
+credit_text_3 = text(580, 490, "Naqeeb", 20, (150,20,150))
+
+credit_text_4 = text(450, 530, "Graphics - mostly from itch.io:", 25, (100,170,50))
+
+credit_text_5 = text(450, 570, "ZeggyGames (Character Templates)", 20, (150,20,150))
+credit_text_6 = text(450, 620, "TotusLotus (Coins and Buttons)", 20, (150,20,150))
+credit_text_7 = text(450, 670, "Grand Chaos (Font) - CC-BY-SA 3.0", 20, (150,20,150))
+credit_text_8 = text(450, 720, "Cat_Sopelka (Brick Background)", 20, (150,20,150))
+credit_text_9 = text(440, 770, "Naqeeb (Modifications and Levers)", 20, (150,20,150))
+
+credit_text_10 = text(570, 830, "Audio:", 25, (100,170,50))
+
+credit_text_11 = text(550, 880, "pixabay.com", 20, (150,20,150))
+
+
+credit_texts = [credit_text_1, credit_text_2, credit_text_3, credit_text_4, credit_text_5, credit_text_6, credit_text_7, credit_text_8, credit_text_9, credit_text_10, credit_text_11]
+
+def move_credit_texts():
+    for c_t in credit_texts:
+        c_t.y -= 0.5
+        if c_t.y < 300:
+            c_t.y = 880
+
+################################################################
+
+while game.on == True:
+
+    #resetting parts of the info page text which gets changed based on game mode#
+    info_page_text_20 = text(400, 520, "Up Arrow - Jump", 15, (100,170,50))
+    info_page_text_21 = text(400, 550, "Left Arrow - Left", 15, (100,170,50))
+    info_page_text_22 = text(400, 580, "Right Arrow - Right", 15, (100,170,50))
+
+    info_page_text[19] = info_page_text_20; info_page_text[20] = info_page_text_21; info_page_text[21] = info_page_text_22
+
+
+    #resetting the socket variables#
+    server = None
+    client = None
+    ################################
+
+    #resetting interaction trigger for online
+    
+    interact_button_pressed_online = False
+
+
+    player_1 = player("player_1", 400, 350, False, player_1_jump_sound)
+
+    player_2 = player("player_2", 500, 350, True, player_2_jump_sound)
+    player_2.speed = 6.7
+    player_2.speed_per_second = player_2.speed * 120
+    player_2.jump_height = 170
+
+    get_player_anims()
+
+    game.time = None
+    game.start_time = None
+    game.end_time = None
+    game.time_running = False
+    
+    #resetting background#
+
+    bg_1 = background(background_png, 0, 0)
+    bg_2 = background(background_png, 1280, 0)
+    bg_3 = background(background_png, 2560, 0)
+    bg_4 = background(background_png, 3840, 0)
+
+
+    backgrounds = [bg_1, bg_2, bg_3, bg_4]
+
+    # resetting buttons #
+
+    for b in buttons:
+        b.activated = False
+
+
+    #resetting alpha for ending screen#
+    ending_surface_alpha = 0
+
+
+    # resetting sounds #
+    pygame.mixer.Sound.stop(alarm_sound)
+    alarm_on = False
+
+
+
+    ########################
+    game.create_and_update_objects(MAP_WIDTH, SCREEN_HEIGHT, coin_spritesheet, small_lever_off_sprite, small_lever_on_sprite, big_lever_off_sprite, big_lever_on_sprite)
+    for coins in game.coins:
+        coins.get_coin_animation(coin_spritesheet, 14)
+        
+
+
+    ###################################################################################
+
+    while game.mode == "menu":
+
+        screen.blit(menu_bg, (0,0))
+
+        for mb in menu_buttons:
+            screen.blit(mb.current_sprite, (mb.x, mb.y))
+
+        button_effects()
+
+        pygame.display.update()
+        clock.tick(game.fps_menus)
+
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for mb in menu_buttons:
+                        mb.update_sprite_menu()
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                for mb in menu_buttons:
+                    mb.update_sprite_and_state_menu()
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+
+    while game.mode == "online: host or join":
+
+        info_page_text_20 = text(400, 520, "W - Jump", 15, (100,170,50))
+        info_page_text_21 = text(400, 550, "A - Left", 15, (100,170,50))
+        info_page_text_22 = text(400, 580, "D - Right", 15, (100,170,50))
+
+        info_page_text[19] = info_page_text_20; info_page_text[20] = info_page_text_21; info_page_text[21] = info_page_text_22
+
+
+        screen.fill((255,255,255))
+        screen.blit(background_png_original_streched, (0,0))
+
+        for b in online_buttons:
+            screen.blit(b.current_sprite, (b.x, b.y))
+    
+
+        for mb in ui_buttons_while_game_end_and_credits:
+            screen.blit(mb.current_sprite, (mb.x, mb.y))
+
+        button_effects()
+
+        pygame.display.update()
+        clock.tick(game.fps_menus)
+        for event in pygame.event.get():
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for mb in ui_buttons_while_game_end_and_credits:
+                        mb.update_sprite()
+                    for b in online_buttons:
+                        b.update_sprite_menu() 
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                for mb in ui_buttons_while_game_end_and_credits:
+                    mb.update_sprite_and_state()
+                for b in online_buttons:
+                    b.update_sprite_and_state_menu()
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+    while game.mode == "online: join - write ip":
+        screen.fill((255,255,255))
+        screen.blit(background_png_original_streched, (0,0))
+
+        for mb in ui_buttons_while_game_end_and_credits:
+            screen.blit(mb.current_sprite, (mb.x, mb.y))
+
+        button_effects()
+
+        text_box_effects()
+
+        ip_input.draw(screen, (255,255,255), (0,0,0))
+
+        ip_input_text.display_text(screen)
+        ip_input_text1.display_text(screen)
+
+
+        pygame.display.update()
+        clock.tick(game.fps_menus)
+        for event in pygame.event.get():
+
+            ip_input.inputs(event)
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for mb in ui_buttons_while_game_end_and_credits:
+                        mb.update_sprite() 
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                for mb in ui_buttons_while_game_end_and_credits:
+                    mb.update_sprite_and_state()
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+    while game.mode == "online: host":
+
+        starttime = pygame.time.get_ticks() / 1000
+
+
+        if game.time_running == False:
+            game.start_time = pygame.time.get_ticks(); game.time_running = True
+
+        screen.fill((255,255,255))
+
+        for b in backgrounds:
+            screen.blit(b.png, (b.x,b.y))
+
+            ###################################
+
+        #setting player_1 direction to None if they are holding down e for a non toggleable lever so they can't move during that period
+        for lever_ in game.levers:
+            if lever_.on == True and lever_.toggleable != True:
+                player_1.direction = None
+
+        #################################
+
+        if game.plate_3.activated == True and  game.lever_5.on != True and  game.lever_6.on == True:
+            hint_text.display_text(screen)
+
+        
+        send_data_from_host_and_receive(connection, player_1, player_2, interact_button_pressed_online)
+
+
+        player_1.movemenet_collision_gravity(game.platforms)
+        player_1.animation(screen)
+
+
+        for l in game.levers:
+            screen.blit(l.sprite, (l.x, l.y))
+
+
+        player_2.animation(screen)
+        if player_2.coordinates_synced_online:
+            player_2.movemenet_collision_gravity(game.platforms)
+
+
+        failed_or_not()
+
+        update_pressure_plates()
+
+        pressure_plate_and_lever_effects()
+
+        camera(player_1, player_2, game.platforms, game.horizontally_moving_platforms,SCREEN_WIDTH)
+
+        ##################################
+
+        for p_p in game.pressure_plates:
+            pygame.draw.rect(screen, p_p.colour, p_p)
+
+        for p in game.platforms_for_drawing:
+            pygame.draw.rect(screen, p.colour, p)
+
+        if player_1.rect.colliderect(game.rect_for_checking_completion):
+            player_1.collided_with_completion_rect = True
+        if player_2.rect.colliderect(game.rect_for_checking_completion):
+            player_2.collided_with_completion_rect = True
+
+
+    ##############################################
+        pygame.draw.rect(screen, game.floor.colour, game.floor)
+        pygame.draw.rect(screen, game.grass.colour, game.grass)
+        pygame.draw.rect(screen, game.roof.colour, game.roof.rect)
+    ####################################################
+
+        for coin in game.coins:
+            coin.animate(screen)
+            
+        player_2.collect_coins(game.coins)
+
+        display_number_of_coins = display_number_of_coins_font.render(f"Coins: {player_2.coins_collected} / {game.total_coins}", True, (0,0,0))
+        screen.blit(display_number_of_coins, (5, 650))
+
+
+        ##################################
+        #buttons#
+
+        for b in ui_buttons_while_game:
+            screen.blit(b.current_sprite, (b.x, b.y))
+            
+        button_effects()
+
+                #ending fade#
+        if player_1.collided_with_completion_rect == True and player_2.collided_with_completion_rect == True:
+            good_ending_surface.set_alpha(ending_surface_alpha)
+            screen.blit(good_ending_surface, (0,0))
+            ending_surface_alpha += 5
+            if ending_surface_alpha == 255:
+                game.mode = "game: end"
+
+
+
+        #################################
+
+        pygame.display.update()
+        clock.tick(game.fps_online)
+        for event in pygame.event.get():
+
+
+            if event.type == pygame.KEYDOWN:
+                #move#
+                if event.key == pygame.K_d: player_1.direction = "Right"
+                if event.key == pygame.K_a: player_1.direction = "Left"
+
+                if event.key == pygame.K_w: 
+                    if player_1.jump_pressed == False:
+                        if player_1.on_something: player_1.jump = True; player_1.jump_pressed = True
+
+                #interact#
+                if event.key == pygame.K_e:
+                    interact_button_pressed_online = True
+                    for lever in game.levers:
+                        if player_1.rect.colliderect(lever.rect):
+                            if lever.toggleable == True:
+                                if lever.button_pressed == False:
+                                    if lever.on != True:
+                                        lever.on = True
+                                    elif lever.on == True:
+                                        lever.on = False
+                                    lever.button_pressed = True
+                            elif lever.toggleable != True:
+                                lever.on = True
+                            
+                            lever.update_lever_sprite_based_on_state()
+
+            if event.type == pygame.KEYUP:
+                #move
+                if event.key == pygame.K_d: player_1.direction = None; player_1.last_direction = "Right"
+                if event.key == pygame.K_a: player_1.direction = None; player_1.last_direction = "Left"
+
+                #interact#
+                if event.key == pygame.K_e:
+                    interact_button_pressed_online = False
+                    for lever in game.levers:
+                        if player_1.rect.colliderect(lever.rect):
+                            if lever.toggleable == True:
+                                lever.button_pressed = False
+
+                            elif lever.toggleable != True:
+                                if lever.on == True:
+                                    lever.on = False
+                                
+                                lever.update_lever_sprite_based_on_state()
+        
+                                
                 
-                if self.rect.right >= platform.left and self.direction == "Right":
-                    self.rect.right = platform.left
-                    self.x = self.rect.x
-            
-                elif self.rect.left <= platform.right and self.direction == "Left":
-                    self.rect.left = platform.right
-                    self.x = self.rect.x
-
-            
-
-        if self.jump == True:
-            if self.jump_start_saved == False:
-                self.jump_start = self.y; self.jump_start_saved = True
-
-            if self.jump_sound_on != True:
-                if self.name == "player_2":
-                    pygame.mixer.Sound.set_volume(self.jump_sound, 0.2)
-                pygame.mixer.Sound.play(self.jump_sound); self.jump_sound_on = True
-
-            self.y -= self.jump_speed; self.rect.y = self.y
-            
-            if (self.jump_start - self.y) > self.jump_height:
-                self.reset_fall_speed = True
-                self.jump = False; self.jump_start = None; self.jump_start_saved = False; self.on_something = False
-
-        for platform in platforms:
-            if self.rect.colliderect(platform) == False:
-                self.on_something = False
-
-        if self.jump == False and self.on_something == False:
-            self.fall_speed += self.gravity
-            self.y += self.fall_speed; self.rect.y = self.y
-            if self.on_something != True and self.reset_fall_speed == True: self.reset_fall_speed = False; self.fall_speed = 2
-
-        for platform in platforms:
-            if self.rect.colliderect(platform):
-
-                if self.rect.top <= platform.bottom and self.jump == True:
-                    self.jump = False
-                    self.rect.top = platform.bottom
-                    self.y = self.rect.y
-                    self.jump = False; self.jump_start = None; self.jump_start_saved = False; self.fall_speed = 0
-
-                elif self.rect.bottom >= platform.top and self.fall_speed > 0:
-                    self.on_something = True    
-                    self.rect.bottom = platform.top
-                    self.y = self.rect.y
-                    self.reset_fall_speed = True
-
-        if self.on_something == True:
-            if self.jump_sound_on == True:
-                pygame.mixer.Sound.stop(self.jump_sound); self.jump_sound_on = False
-
-    def get_animations(self, animation_name, number_of_frames, direction, animation_sheet):
-        if direction == "right": frames_order = "left to right"
-        else: frames_order = "right to left"
-
-        if frames_order == "left to right":
-            for frame_number in range(number_of_frames):
-                frame = animation_sheet.subsurface((frame_number*48, 0, 48, 48)); frame = pygame.transform.scale(frame, (144, 144)) 
-                self.animations[animation_name]["frames"][direction].append(frame)
-        elif frames_order == "right to left":
-            width = animation_sheet.get_width()
-            for frame_number in range(number_of_frames):
-                frame = animation_sheet.subsurface((((width -48) -(48*frame_number)), 0, 48, 48));  frame = pygame.transform.scale(frame, (144, 144)) 
-                self.animations[animation_name]["frames"][direction].append(frame)
-
-
-
-    def animation(self, screen):
-            if self.direction == None: direction = self.last_direction.lower()
-            else: direction = self.direction.lower()
-
-
-            if self.direction == None and self.on_something == True and self.jump == False: #runs 120x per second
-                self.change_anim_after_ms = 120 // self.animations["idle"]["number of frames"]
-
-                if self.current_anim != "idle":
-                    self.current_frame_number = 0
-                self.current_anim = "idle"
-
-            #####   
                 
-            elif self.direction != None and self.on_something == True:
+                #jump
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_w: 
+                    player_1.jump_pressed = False
 
-                self.change_anim_after_ms = 120 // self.animations["walk"]["number of frames"]
 
-                if self.name == "player_1":
 
-                    if self.current_anim != "walk":
-                        self.current_frame_number = 0
-                    self.current_anim = "walk"
+
+            ######## #ui buttons # ###########
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for b in ui_buttons_while_game:
+                        b.update_sprite()
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                #if pygame.mouse.get_pressed()[0]:
+                for b in ui_buttons_while_game:
+                    b.update_sprite_and_state()
+
+
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+        
+        deltatime = (pygame.time.get_ticks() / 1000) - starttime
+
+        player_1.update_speed_online(deltatime)
+        player_2.update_speed_online(deltatime)
+
+
+
+    while game.mode == "online: join":
+
+        starttime = pygame.time.get_ticks() / 1000
+
+        if game.time_running == False:
+            game.start_time = pygame.time.get_ticks(); game.time_running = True
+
+        screen.fill((255,255,255))
+
+        for b in backgrounds:
+            screen.blit(b.png, (b.x,b.y))
+
+            ###################################
+
+        #setting player_1 direction to None if they are holding down e for a non toggleable lever so they can't move during that period
+        for lever_ in game.levers:
+            if lever_.on == True and lever_.toggleable != True:
+                player_1.direction = None
+
+        #################################
+
+        if game.plate_3.activated == True and  game.lever_5.on != True and  game.lever_6.on == True:
+            hint_text.display_text(screen)
+
+        
+        send_data_from_client_and_receive(client, player_1, player_2, game)
+
+
+        if player_1.coordinates_synced_online:
+            player_1.movemenet_collision_gravity(game.platforms)
+
+        player_1.animation(screen)
+
+
+        for l in game.levers:
+            screen.blit(l.sprite, (l.x, l.y))
+
+
+        player_2.animation(screen)
+        player_2.movemenet_collision_gravity(game.platforms)
+
+        failed_or_not()
+
+        update_pressure_plates()
+
+        pressure_plate_and_lever_effects()
+
+        camera(player_1, player_2, game.platforms, game.horizontally_moving_platforms,SCREEN_WIDTH)
+
+        ##################################
+
+        for p_p in game.pressure_plates:
+            pygame.draw.rect(screen, p_p.colour, p_p)
+
+        for p in game.platforms_for_drawing:
+            pygame.draw.rect(screen, p.colour, p)
+
+        if player_1.rect.colliderect(game.rect_for_checking_completion):
+            player_1.collided_with_completion_rect = True
+        if player_2.rect.colliderect(game.rect_for_checking_completion):
+            player_2.collided_with_completion_rect = True
+
+
+    ##############################################
+        pygame.draw.rect(screen, game.floor.colour, game.floor)
+        pygame.draw.rect(screen, game.grass.colour, game.grass)
+        pygame.draw.rect(screen, game.roof.colour, game.roof.rect)
+    ####################################################
+
+        for coin in game.coins:
+            coin.animate(screen)
+            
+        player_2.collect_coins(game.coins)
+
+        display_number_of_coins = display_number_of_coins_font.render(f"Coins: {player_2.coins_collected} / {game.total_coins}", True, (0,0,0))
+        screen.blit(display_number_of_coins, (5, 650))
+
+
+        ##################################
+        #buttons#
+
+        for b in ui_buttons_while_game:
+            screen.blit(b.current_sprite, (b.x, b.y))
+            
+        button_effects()
+
+                #ending fade#
+        if player_1.collided_with_completion_rect == True and player_2.collided_with_completion_rect == True:
+            good_ending_surface.set_alpha(ending_surface_alpha)
+            screen.blit(good_ending_surface, (0,0))
+            ending_surface_alpha += 5
+            if ending_surface_alpha == 255:
+                game.mode = "game: end"
+
+
+
+        #################################
+
+        pygame.display.update()
+        clock.tick(game.fps_online)
+        for event in pygame.event.get():
+
+
+            if event.type == pygame.KEYDOWN:
+                #move#
+                if event.key == pygame.K_d: player_2.direction = "Right"
+                if event.key == pygame.K_a: player_2.direction = "Left"
+
+                if event.key == pygame.K_w: 
+                    if player_2.jump_pressed == False:
+                        if player_2.on_something: player_2.jump = True; player_2.jump_pressed = True
+
+
+
+            if event.type == pygame.KEYUP:
+                #move
+                if event.key == pygame.K_d: player_2.direction = None; player_2.last_direction = "Right"
+                if event.key == pygame.K_a: player_2.direction = None; player_2.last_direction = "Left"
                 
-                elif self.name == "player_2":
-
-                    if self.current_anim != "run":
-                        self.current_frame_number = 0
-                    self.current_anim = "run"
-
-                if self.current_frame_number > self.animations["walk"]["number of frames"]:
-                    self.current_frame_number = 0
-
-            #####
-
-            elif self.jump == True:
-                self.change_anim_after_ms = 120 // self.animations["jump"]["number of frames"]
-
-                if self.current_anim != "jump":
-                    self.current_frame_number = 0
-                self.current_anim = "jump"
-
-            if self.current_frame_number > self.animations["jump"]["number of frames"]:
-                    self.current_frame_number = 0
+                
+                #jump
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_w: 
+                    player_2.jump_pressed = False
 
 
-            elif self.jump != True and self.on_something != True:
-                self.change_anim_after_ms = 120 // self.animations["land"]["number of frames"]
-
-                if self.current_anim != "land":
-                    self.current_frame_number = 0
-                self.current_anim = "land"
-
-            if self.current_frame_number > self.animations["land"]["number of frames"]:
-                    self.current_frame_number = 0
 
 
-            #####
+            ######## #ui buttons # ###########
 
-
-            #elif self.on_something == False:
-            #    return
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for b in ui_buttons_while_game:
+                        b.update_sprite()
             
-            screen.blit(self.animations[self.current_anim]["frames"][direction][self.current_frame_number], (self.x-self.player_offset_rect_x, self.y-self.player_offset_rect_y))
-
-            if self.ms >= self.change_anim_after_ms:
-                self.current_frame_number += 1
-                self.ms = 0
-            else:
-                self.ms += 1
-
-            if self.current_frame_number >= self.animations[self.current_anim]["number of frames"]:
-                self.current_frame_number = 0
+            if event.type == pygame.MOUSEBUTTONUP:
+                #if pygame.mouse.get_pressed()[0]:
+                for b in ui_buttons_while_game:
+                    b.update_sprite_and_state()
 
 
 
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
 
-    def collect_coins(self,coins):
-        if self.can_collect_coins == True:
-            for coin in coins:
-                if self.rect.colliderect(coin.rect):
-                    self.coins_collected += 1
-                    coins.remove(coin)
+        deltatime = (pygame.time.get_ticks() / 1000) - starttime
+
+        player_1.update_speed_online(deltatime)
+        player_2.update_speed_online(deltatime)
+
+
+    while game.mode == "game: running":
+
+        if game.time_running == False:
+            game.start_time = pygame.time.get_ticks(); game.time_running = True
+
+        screen.fill((255,255,255))
+
+        for b in backgrounds:
+            screen.blit(b.png, (b.x,b.y))
+
+            ###################################
+
+        #setting player_1 direction to None if they are holding down e for a non toggleable lever so they can't move during that period
+        for lever_ in game.levers:
+            if lever_.on == True and lever_.toggleable != True:
+                player_1.direction = None
+
+        #################################
+
+        if game.plate_3.activated == True and  game.lever_5.on != True and  game.lever_6.on == True:
+            hint_text.display_text(screen)
+
+
+        player_1.movemenet_collision_gravity(game.platforms)
+        player_1.animation(screen)
+
+
+        for l in game.levers:
+            screen.blit(l.sprite, (l.x, l.y))
+
+
+        player_2.animation(screen)
+        player_2.movemenet_collision_gravity(game.platforms)
+
+        failed_or_not()
+
+        update_pressure_plates()
+
+        pressure_plate_and_lever_effects()
+
+        camera(player_1, player_2, game.platforms, game.horizontally_moving_platforms,SCREEN_WIDTH)
+
+        ##################################
+
+        for p_p in game.pressure_plates:
+            pygame.draw.rect(screen, p_p.colour, p_p)
+
+        for p in game.platforms_for_drawing:
+            pygame.draw.rect(screen, p.colour, p)
+
+        if player_1.rect.colliderect(game.rect_for_checking_completion):
+            player_1.collided_with_completion_rect = True
+        if player_2.rect.colliderect(game.rect_for_checking_completion):
+            player_2.collided_with_completion_rect = True
+
+
+    ##############################################
+        pygame.draw.rect(screen, game.floor.colour, game.floor)
+        pygame.draw.rect(screen, game.grass.colour, game.grass)
+        pygame.draw.rect(screen, game.roof.colour, game.roof.rect)
+    ####################################################
+
+        for coin in game.coins:
+            coin.animate(screen)
             
-    def update_speed_online(self, deltatime):
-        self.speed = deltatime * self.speed_per_second
+        player_2.collect_coins(game.coins)
 
-        self.jump_speed = deltatime * self.jump_speed_per_second
-        
-
-        
-        
-        
+        display_number_of_coins = display_number_of_coins_font.render(f"Coins: {player_2.coins_collected} / {game.total_coins}", True, (0,0,0))
+        screen.blit(display_number_of_coins, (5, 650))
 
 
+        ##################################
+        #buttons#
+
+        for b in ui_buttons_while_game:
+            screen.blit(b.current_sprite, (b.x, b.y))
+            
+        button_effects()
+
+                #ending fade#
+        if player_1.collided_with_completion_rect == True and player_2.collided_with_completion_rect == True:
+            good_ending_surface.set_alpha(ending_surface_alpha)
+            screen.blit(good_ending_surface, (0,0))
+            ending_surface_alpha += 5
+            if ending_surface_alpha == 255:
+                game.mode = "game: end"
+
+
+
+        #################################
+
+        pygame.display.update()
+        clock.tick(game.fps)
+        for event in pygame.event.get():
+
+
+            if event.type == pygame.KEYDOWN:
+                #move#
+                if event.key == pygame.K_d: player_1.direction = "Right"
+                if event.key == pygame.K_a: player_1.direction = "Left"
+
+                if event.key == pygame.K_w: 
+                    if player_1.jump_pressed == False:
+                        if player_1.on_something: player_1.jump = True; player_1.jump_pressed = True
+
+                #interact#
+                if event.key == pygame.K_e:
+                    for lever in game.levers:
+                        if player_1.rect.colliderect(lever.rect):
+                            if lever.toggleable == True:
+                                if lever.button_pressed == False:
+                                    if lever.on != True:
+                                        lever.on = True
+                                    elif lever.on == True:
+                                        lever.on = False
+                                    lever.button_pressed = True
+                            elif lever.toggleable != True:
+                                lever.on = True
+                            
+                            lever.update_lever_sprite_based_on_state()
+
+            if event.type == pygame.KEYUP:
+                #move
+                if event.key == pygame.K_d: player_1.direction = None; player_1.last_direction = "Right"
+                if event.key == pygame.K_a: player_1.direction = None; player_1.last_direction = "Left"
+
+                #interact#
+                if event.key == pygame.K_e:
+                    for lever in game.levers:
+                        if player_1.rect.colliderect(lever.rect):
+                            if lever.toggleable == True:
+                                lever.button_pressed = False
+
+                            elif lever.toggleable != True:
+                                if lever.on == True:
+                                    lever.on = False
+                                
+                                lever.update_lever_sprite_based_on_state()
+        
+                                
+                
+                
+                #jump
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_w: 
+                    player_1.jump_pressed = False
+
+
+
+            #if event.type == pygame.KEYDOWN:
+
+
+
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT: player_2.direction = "Right"
+                if event.key == pygame.K_LEFT: player_2.direction = "Left"
+
+                if event.key == pygame.K_UP:
+                    if player_2.jump_pressed == False:
+                        if player_2.on_something: player_2.jump = True; player_2.jump_pressed = True
+
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_RIGHT: player_2.direction = None; player_2.last_direction = "Right"
+                if event.key == pygame.K_LEFT: player_2.direction = None; player_2.last_direction = "Left"
+                
+                #jump
+            if event.type == pygame.KEYUP:
+                if event.key == pygame.K_UP: 
+                    player_2.jump_pressed = False
+
+
+
+
+            ######## #ui buttons # ###########
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for b in ui_buttons_while_game:
+                        b.update_sprite()
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                #if pygame.mouse.get_pressed()[0]:
+                for b in ui_buttons_while_game:
+                    b.update_sprite_and_state()
+
+
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+
+    while game.mode == "game: end":
+
+        if game.time_running == True:
+            game.time_running = False
+            game.end_time = pygame.time.get_ticks()
+            game.time  = (game.end_time - game.start_time)//1000 #in seconds
+            ending_time = text(350, 350, f"Time: {game.time} seconds or around {(game.time)//60} minute(s)", 30, (255,255,255))
+ 
+
+        screen.fill((0,0,0))
+
+        good_ending_text_1.display_text(screen)
+
+        ending_time.display_text(screen)
+
+        for b in ui_buttons_while_game_end_and_credits:
+            screen.blit(b.current_sprite, (b.x, b.y))
+
+        button_effects()
+
+
+        pygame.display.update()
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for b in ui_buttons_while_game_end_and_credits:
+                        b.update_sprite()
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                #if pygame.mouse.get_pressed()[0]:
+                for b in ui_buttons_while_game_end_and_credits:
+                    b.update_sprite_and_state()
+
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+
+    while game.mode == "game: experiment failed":
+
+        if game.time_running == True:
+            game.time_running = False
+            game.end_time = pygame.time.get_ticks()
+            game.time  = (game.end_time - game.start_time)//1000 #in seconds
+            ending_time = text(350, 350, f"Time: {game.time} seconds or around {(game.time)//60} minute(s)", 30, (255,255,255))
+ 
+
+
+        screen.fill((0,0,0))
+
+        for b in ui_buttons_while_game_end_and_credits:
+            screen.blit(b.current_sprite, (b.x, b.y))
+        
+
+        bad_ending_text_1.display_text(screen)
+        bad_ending_text_2.display_text(screen)
+
+        ending_time.display_text(screen)
+
+        button_effects()
+
+        if alarm_on == False:
+            pygame.mixer.Sound.play(alarm_sound)
+            alarm_on = True
+
+        pygame.display.update()
+        clock.tick(game.fps_menus)
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for b in ui_buttons_while_game_end_and_credits:
+                        b.update_sprite()
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                for b in ui_buttons_while_game_end_and_credits:
+                    b.update_sprite_and_state()
+
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+
+    while game.mode == "credits":
+            
+
+        screen.fill((255,255,255))
+
+        move_credit_texts()
+
+        for t in credit_texts:
+            t.display_text(screen)
+
+        screen.blit(credits_bg, (0,0))
+        
+        for mb in ui_buttons_while_game_end_and_credits:
+            screen.blit(mb.current_sprite, (mb.x, mb.y))
+
+        button_effects()
+
+        pygame.display.update()
+        clock.tick(game.fps_menus)
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for mb in ui_buttons_while_game_end_and_credits:
+                        mb.update_sprite()
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                for mb in ui_buttons_while_game_end_and_credits:
+                    mb.update_sprite_and_state()
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
