@@ -211,9 +211,7 @@ def WaitForConnection():
 
     if game.mode == "online: host or join":
         game.mode = "online: host"
-
-
-        
+     
 
 
 def pressure_plate_and_lever_effects(): #the things they activate
@@ -766,7 +764,38 @@ while game.on == True:
                 exit()
 
     while game.mode == "story":
-        pass
+
+        button_effects()
+
+        screen.fill((255, 255, 255, 255))
+        
+
+
+        
+        for b in ui_buttons_while_game_end_and_credits:
+            screen.blit(b.current_sprite, (b.x, b.y))
+
+
+        clock.tick(game.fps_story)
+        pygame.display.update()
+        
+
+        for event in pygame.event.get():
+
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if pygame.mouse.get_pressed()[0]:
+                    for b in ui_buttons_while_game_end_and_credits:
+                        b.update_sprite()
+            
+            if event.type == pygame.MOUSEBUTTONUP:
+                #if pygame.mouse.get_pressed()[0]:
+                for b in ui_buttons_while_game_end_and_credits:
+                    b.update_sprite_and_state()
+
+
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
 
     while game.mode == "online: host or join":
 
@@ -910,7 +939,7 @@ while game.on == True:
             player_2.collided_with_completion_rect = True
 
 
-    ##############################################
+        ##############################################
         pygame.draw.rect(screen, game.floor.colour, game.floor)
         pygame.draw.rect(screen, game.grass.colour, game.grass)
         pygame.draw.rect(screen, game.roof.colour, game.roof.rect)

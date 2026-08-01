@@ -13,6 +13,7 @@ class Game:
         self.fps = 120
         self.fps_online = 120 
         self.fps_menus = 120
+        self.fps_story = 60
 
         self.mode = "menu"
 
