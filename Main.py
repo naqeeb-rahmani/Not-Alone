@@ -315,6 +315,10 @@ def button_effects():
         game.mode = "game: running"
         menu_play_button.activated = False
 
+    if menu_story_button.activated == True and game.mode == "menu":
+        game.mode = "story"
+        menu_story_button.activated = False
+
     if menu_online_button.activated == True and game.mode == "menu":
         game.mode = "online: host or join"
         menu_online_button.activated = False
@@ -564,6 +568,11 @@ ui_buttons_while_menu = []
 
 menu_bg = pygame.image.load(r"Assets\User_Interface\MenuBackground.png").convert_alpha()
 
+story_button_sprite = pygame.image.load(r"Assets\User_Interface\Story 32x32.png").convert_alpha()
+story_button_sprite = pygame.transform.scale(story_button_sprite, (180,160))
+story_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\StoryPressed 32x32.png").convert_alpha()
+story_button_pressed_sprite = pygame.transform.scale(story_button_pressed_sprite, (180,160))
+
 play_button_sprite = pygame.image.load(r"Assets\User_Interface\Play 32x32.png").convert_alpha()
 play_button_sprite = pygame.transform.scale(play_button_sprite, (180,160))
 play_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\PlayPressed 32x32.png").convert_alpha()
@@ -603,9 +612,12 @@ credits_button_sprite = pygame.transform.scale(credits_button_sprite, (180,160))
 credits_button_pressed_sprite = pygame.image.load(r"Assets\User_Interface\CreditsPressed 32x32.png").convert_alpha()
 credits_button_pressed_sprite = pygame.transform.scale(credits_button_pressed_sprite, (180,160))
 
+
 menu_play_button = menu_button(530, 350, play_button_sprite, play_button_pressed_sprite)
 
-menu_online_button = menu_button(530, 450, online_button_sprite, online_button_pressed_sprite)
+menu_story_button = menu_button(430, 450, story_button_sprite, story_button_pressed_sprite)
+
+menu_online_button = menu_button(630, 450, online_button_sprite, online_button_pressed_sprite)
 
 menu_credits_button = menu_button(530, 550, credits_button_sprite, credits_button_pressed_sprite)
 
@@ -616,7 +628,7 @@ online_join_button = menu_button(530, 370, join_button_sprite, join_button_press
 
 online_buttons = [online_host_button, online_join_button]
 
-menu_buttons = [menu_play_button, menu_online_button, menu_credits_button]
+menu_buttons = [menu_story_button, menu_play_button, menu_online_button, menu_credits_button]
 
 #all buttons
 buttons = [to_menu_button, info_button, menu_play_button, menu_credits_button, online_host_button, online_join_button]
@@ -753,6 +765,8 @@ while game.on == True:
                 pygame.quit()
                 exit()
 
+    while game.mode == "story":
+        pass
 
     while game.mode == "online: host or join":
 
