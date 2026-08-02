@@ -768,6 +768,8 @@ while game.on == True:
         button_effects()
 
         screen.fill((255, 255, 255, 255))
+
+        
         
 
 
