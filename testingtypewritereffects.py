@@ -12,16 +12,21 @@ clock = pygame.time.Clock()
 
 fontsize = 10
 
-FONT = pygame.font.Font("Assets\Font\Grand9k Pixel.tff", fontsize)
+text = "six seven"
 
-text = 
+testtext = Typewriter_Text(450, 300, 1, text, [None, None], True)
 
 while True:
+    starttime = pygame.time.get_ticks()
     clock.tick(60)
 
 
     screen.fill(WHITE)
 
+    try:
+        testtext.DrawAndUpdate(screen, deltatime)
+    except:
+        testtext.DrawAndUpdate(screen, 0)
 
 
 
@@ -33,4 +38,6 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
+    
+    deltatime = pygame.time.get_ticks() - starttime
             
