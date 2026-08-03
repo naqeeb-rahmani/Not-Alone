@@ -634,9 +634,6 @@ buttons = [to_menu_button, info_button, menu_play_button, menu_credits_button, o
 #credits
 credits_bg = pygame.image.load(r"Assets\User_Interface\CreditsBackground.png").convert_alpha()
 
-
-
-
 credit_text_1 = text(550, 400, "CREDITS:", 30,(150,20,150))
 
 credit_text_2 = text(540, 440, "Programming:", 25, (100,170,50))
@@ -675,7 +672,6 @@ while game.on == True:
 
     info_page_text[19] = info_page_text_20; info_page_text[20] = info_page_text_21; info_page_text[21] = info_page_text_22
 
-
     #resetting the socket variables#
     server = None
     client = None
@@ -684,7 +680,6 @@ while game.on == True:
     #resetting interaction trigger for online
     
     interact_button_pressed_online = False
-
 
     player_1 = player("player_1", 400, 350, False, player_1_jump_sound)
 
@@ -707,7 +702,6 @@ while game.on == True:
     bg_3 = background(background_png, 2560, 0)
     bg_4 = background(background_png, 3840, 0)
 
-
     backgrounds = [bg_1, bg_2, bg_3, bg_4]
 
     # resetting buttons #
@@ -724,15 +718,12 @@ while game.on == True:
     pygame.mixer.Sound.stop(alarm_sound)
     alarm_on = False
 
-
-
     ########################
+
     game.create_and_update_objects(MAP_WIDTH, SCREEN_HEIGHT, coin_spritesheet, small_lever_off_sprite, small_lever_on_sprite, big_lever_off_sprite, big_lever_on_sprite)
     for coins in game.coins:
         coins.get_coin_animation(coin_spritesheet, 14)
         
-
-
     ###################################################################################
 
     while game.mode == "menu":
