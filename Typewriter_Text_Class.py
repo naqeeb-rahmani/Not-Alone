@@ -18,7 +18,10 @@ class Typewriter_Text:
 
         self.totallength = len(self.currenttext)
         self.currentlength = 0
-        
+
+        self.fontsize = 24        
+        self.font = pygame.font.Font("Assets\Font\Grand9k Pixel.tff", self.fontsize)
+        self.currentdisplaytext = 
 
         self.single_text = if_single_text_true_or_false
 
@@ -31,5 +34,9 @@ class Typewriter_Text:
     
     def DrawAndUpdate(self, deltatime):
         self.timer += 0
+
+        if self.timer >= (60/self.speed_per_second):
+            self.timer = 0
+
 
         

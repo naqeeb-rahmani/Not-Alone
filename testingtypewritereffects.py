@@ -10,8 +10,11 @@ screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 
 
+fontsize = 10
 
+FONT = pygame.font.Font("Assets\Font\Grand9k Pixel.tff", fontsize)
 
+text = 
 
 while True:
     clock.tick(60)
