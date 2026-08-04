@@ -1,6 +1,7 @@
 import pygame
 
-BLACK = (0,0,0,255)
+BLACK = (0, 0, 0, 255)
+GREYish = (50, 50, 50, 255)
 
 class Typewriter_Text:
     def __init__(self, text_pos, instruction_text_for_pressing_enter_pos, speed_per_second,text, texts, if_single_text_true_or_false):
@@ -8,9 +9,14 @@ class Typewriter_Text:
         self.text = text
         self.texts = texts
 
+        self.fontsize = 24        
+        self.font = pygame.font.Font("Assets\Font\Grand9K Pixel.ttf", self.fontsize)
+
         self.fullydisplayedtext = False
 
         self.next_text_text_pos = instruction_text_for_pressing_enter_pos
+
+        self.next_text_text = self.font.render("Press Enter to Continue...", True, GREYish)
 
         self.timer = 0 #time in seconds
 
@@ -24,12 +30,10 @@ class Typewriter_Text:
         self.totallength = len(self.currenttext)
         self.currentlength = 0
 
-        self.fontsize = 24        
-        self.font = pygame.font.Font("Assets\Font\Grand9K Pixel.ttf", self.fontsize)
         if if_single_text_true_or_false:
             self.currentdisplaytext = self.font.render(text[0:self.currentlength], True, BLACK)
         else:
-            self.currentdisplaytext = self.font.render(texts[self.currenttextnumber][0:self.currentlength])
+            self.currentdisplaytext = self.font.render(texts[self.currenttextnumber][0:self.currentlength], True, BLACK)
 
         self.single_text = if_single_text_true_or_false
 
@@ -39,7 +43,7 @@ class Typewriter_Text:
         return self.fullydisplayedtext
 
     def GetLengthOfCurrentText(self):
-        return len(self.currenttext)
+        return self.currentlength
     
     def GetLengthOfDisplayedText(self):
         return self.currentlength
@@ -59,13 +63,15 @@ class Typewriter_Text:
             if self.single_text:
                 self.currentdisplaytext = self.font.render(self.text[0:self.currentlength], True, BLACK)
             else:
-                self.currentdisplaytext = self.font.render(self.texts[self.currenttextnumber][0:self.currentlength])
+                self.currentdisplaytext = self.font.render(self.texts[self.currenttextnumber][0:self.currentlength], True, BLACK)
 
         screen.blit(self.currentdisplaytext, self.text_pos)
 
-        if self.GetLengthOfDisplayedText() >= self.totallength:
+        if self.GetLengthOfDisplayedText() >= self.totallength and self.single_text == False:
             self.fullydisplayedtext = True
-            #have to draw text that says to press enter to change text also an if statement so it only shows when multiple texts given
+            if self.currenttextnumber < len(self.texts):
+                screen.blit(self.next_text_text, self.next_text_text_pos)
+            
 
     def NextText(self, event): #used when having a list of texts
         
