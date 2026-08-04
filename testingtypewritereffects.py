@@ -10,11 +10,13 @@ screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 
 
-fontsize = 10
+text = "Six Sayven"
 
-text = "six seven"
+texts = ["Six Sayven", "Six Sayven again", "Six Seven once more (lasttimee)"]
 
-testtext = Typewriter_Text(450, 300, 1, text, [None, None], True)
+testtext = Typewriter_Text((300, 100), (0,0), 1000, text, [None, None], True)
+
+#testtexts = 
 
 while True:
     starttime = pygame.time.get_ticks()
@@ -29,7 +31,6 @@ while True:
         testtext.DrawAndUpdate(screen, 0)
 
 
-
     pygame.display.flip()
 
 
@@ -39,5 +40,5 @@ while True:
             pygame.quit()
             exit()
     
-    deltatime = pygame.time.get_ticks() - starttime
+    deltatime = (pygame.time.get_ticks() - starttime)/1000
             
