@@ -10,6 +10,7 @@ from UI_Button_Class import *
 from Menu_Button_Class import *
 from Background_Class import *
 from GUI import *
+from Typewriter_Text_Class import *
 
 
 
@@ -630,6 +631,42 @@ menu_buttons = [menu_story_button, menu_play_button, menu_online_button, menu_cr
 
 #all buttons
 buttons = [to_menu_button, info_button, menu_play_button, menu_credits_button, online_host_button, online_join_button]
+
+#story
+
+scene1 = pygame.image.load("Assets\Story\scene1 1280x720.png")
+
+
+
+scenes = [scene1]
+
+storyintrotextransparency = 0
+storyintrotext = font.render("Wednesday, the 6th of july, 2067", True, (255, 255, 255, storyintrotextransparency))
+
+def IncreaseIntroTextTransparencyInStoryMode():
+    global storyintrotext, storyintrotext
+
+    if (storyintrotextransparency < 255):
+        storyintrotextransparency += 5
+        storyintrotext = font.render("Wednesday, the 6th of july, 2067", True, (255, 255, 255, storyintrotextransparency))
+    
+
+
+
+
+
+
+
+
+
+
+
+
+########################################
+
+
+
+
 
 #credits
 credits_bg = pygame.image.load(r"Assets\User_Interface\CreditsBackground.png").convert_alpha()

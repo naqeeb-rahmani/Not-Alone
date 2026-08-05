@@ -3,6 +3,10 @@ import pygame
 BLACK = (0, 0, 0, 255)
 GREYish = (50, 50, 50, 255)
 
+pygame.init()
+
+font = pygame.font.Font("Assets\Font\Grand9K Pixel.ttf", 24)
+
 class Typewriter_Text:
     def __init__(self, text_pos, instruction_text_for_pressing_enter_pos, speed_per_second,text, texts, if_single_text_true_or_false):
         self.text_pos = text_pos
@@ -51,7 +55,6 @@ class Typewriter_Text:
     def UpdateTotalLength(self):
         self.totallength = len(self.currenttext)
 
-    
     def DrawAndUpdate(self, screen, deltatime):
         self.timer += deltatime
 
