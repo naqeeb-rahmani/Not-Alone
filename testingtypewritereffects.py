@@ -12,36 +12,35 @@ clock = pygame.time.Clock()
 
 text = "Six Sayven"
 
-texts = ["Six Sayven", "Six Sayven again", "Six Seven once more (lasttimee)"]
+texts = ["Six Sayven", "Six Sayven again", "Six Sayven once more (last timee)"]
 
-testtext = Typewriter_Text((100, 100), (0,0), 1000, text, [None, None], True)
+testtext = Typewriter_Text((100, 100), (0,0), 1, text, [None, None], True)
 
 testtexts = Typewriter_Text((100, 100), (100, 150), 1, "nothing", texts, False)
 
 while True:
     starttime = pygame.time.get_ticks()
-    clock.tick(60)
-
+    #clock.tick(60)
 
     screen.fill(WHITE)
 
     try:
-        #testtext.DrawAndUpdate(screen, deltatime)
-        testtexts.DrawAndUpdate(screen, deltatime)
+        testtext.DrawAndUpdate(screen, deltatime)
+        #testtexts.DrawAndUpdate(screen, deltatime)
     except:
-        #testtext.DrawAndUpdate(screen, 0)
-        testtexts.DrawAndUpdate(screen, 0)
+        testtext.DrawAndUpdate(screen, 0)
+        #testtexts.DrawAndUpdate(screen, 0)
 
     pygame.display.flip()
 
 
     for event in pygame.event.get():
 
-        testtexts.NextText(event)
+        #testtexts.NextText(event)
 
         if event.type == pygame.QUIT:
             pygame.quit()
             exit()
     
-    deltatime = (pygame.time.get_ticks() - starttime)/1000
+    deltatime = (pygame.time.get_ticks() - starttime)
             

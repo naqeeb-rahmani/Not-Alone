@@ -69,7 +69,7 @@ class Typewriter_Text:
 
         if self.GetLengthOfDisplayedText() >= self.totallength and self.single_text == False:
             self.fullydisplayedtext = True
-            if self.currenttextnumber < len(self.texts):
+            if self.currenttextnumber < (len(self.texts)-1):
                 screen.blit(self.next_text_text, self.next_text_text_pos)
             
 
@@ -78,7 +78,7 @@ class Typewriter_Text:
         if self.GetLengthOfCurrentText() == self.totallength:
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    if self.currenttextnumber < len(self.texts):
+                    if self.currenttextnumber < (len(self.texts)-1):
                         self.currenttextnumber+=1
                         self.currentlength = 0
                         self.totallength = len(self.texts[self.currenttextnumber])
