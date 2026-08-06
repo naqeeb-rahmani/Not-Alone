@@ -13,9 +13,6 @@ from GUI import *
 from Typewriter_Text_Class import *
 from Story_Class import *
 
-
-
-
 #setting up the sockets
 
 IP = socket.gethostbyname(socket.gethostname()) #gets your local ip
@@ -24,8 +21,6 @@ PORT = 6767 #an empty port which the game will use
 ADDRESS = (IP, PORT)
 
 ######################
-
-
 
 #screen#
 
@@ -40,7 +35,6 @@ clock = pygame.time.Clock()
 #        * But Together
 
 #---------game-variables------------#
-
 
 
 game = Game()
@@ -153,7 +147,6 @@ coin_spritesheet = pygame.image.load("Assets\Map\Coin\Coin 16x16.png")
 
 display_number_of_coins_font = pygame.font.Font("Assets\Font\Grand9K Pixel.ttf", 20)
 
-
 ####map####
 
 ### background ###
@@ -171,9 +164,6 @@ bg_4 = background(background_png, 3840, 0)
 
 
 backgrounds = [bg_1, bg_2, bg_3, bg_4]
-
-
-
 
 
 ## ### ##
@@ -212,8 +202,7 @@ def WaitForConnection():
 
     if game.mode == "online: host or join":
         game.mode = "online: host"
-     
-
+    
 
 def pressure_plate_and_lever_effects(): #the things they activate
     if game.platform_2_plate.activated == True or game.lever_1.on == True:
@@ -287,6 +276,7 @@ def pressure_plate_and_lever_effects(): #the things they activate
     else:
         if (game.wall_6.start_position_y - game.wall_6.y) > 0:
             game.wall_6.y += 5; game.wall_6.rect.y = game.wall_6.y
+
 
 def button_effects():
     if to_menu_button.activated == True and game.mode != "menu":
@@ -384,13 +374,11 @@ def text_box_effects():
         except:     
             pass
 
-        
 
 def failed_or_not():
     if player_1.y > 720 or player_1.y < 0 or player_2.y > 720 or player_2.y < 0:
         game.mode = "game: experiment failed"
     
-
 #camera#
 
 def camera(player_1, player_2, platforms, horizontally_moving_platforms,SCREEN_WIDTH):
@@ -523,6 +511,8 @@ info_page_text_30, info_page_text_31, info_page_text_32, info_page_text_33, info
 ###### ending ###########
 
 #good ending
+
+
 good_ending_surface_alpha = 0
 good_ending_surface = pygame.Surface((1280, 720)); good_ending_surface.set_alpha(good_ending_surface_alpha); good_ending_surface.fill((0,0,0))
 
@@ -530,6 +520,7 @@ good_ending_text_1 = text(325, 250, "EXPERIMENT SUCCESFUL", 50, (0,255,0))
 
 
 #############
+
 
 bad_ending_text_1 = text(500, 150, "0x0000009C", 40, (255,0,0))
 bad_ending_text_2 = text(385, 250, "EXPERIMENT FAILED", 50, (255,0,0))
