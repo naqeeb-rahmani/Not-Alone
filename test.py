@@ -779,10 +779,13 @@ while game.on == True:
 
         screen.fill((0, 0, 0, 255))
 
-        story.DisplayStoryIntroText(screen)
-        story.IncreaseIntroTextTransparencyInStoryMode(font)
         
+        if(story.intro):
+            story.DisplayStoryIntroText(screen)
+            story.IncreaseIntroTextTransparencyInStoryMode(font)
 
+        if(story.intro != True):
+            screen.blit(story.scenes[story.currentscene], (0, 0))
 
         
         for b in ui_buttons_while_game_end_and_credits:
@@ -794,6 +797,9 @@ while game.on == True:
         
 
         for event in pygame.event.get():
+
+            if(story.intro):
+                story.ContinueFromIntro(event)
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:
