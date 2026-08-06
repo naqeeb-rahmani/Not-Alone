@@ -11,7 +11,7 @@ from Menu_Button_Class import *
 from Background_Class import *
 from GUI import *
 from Typewriter_Text_Class import *
-
+from Story_Class import *
 
 
 
@@ -633,30 +633,7 @@ menu_buttons = [menu_story_button, menu_play_button, menu_online_button, menu_cr
 buttons = [to_menu_button, info_button, menu_play_button, menu_credits_button, online_host_button, online_join_button]
 
 #story
-
-scene1 = pygame.image.load("Assets\Story\scene1 1280x720.png")
-
-
-
-scenes = [scene1]
-
-storyintrotextransparency = 0
-storyintrotext = font.render("Wednesday, the 6th of july, 2067", True, (255, 255, 255))
-storyintrotext.set_alpha(storyintrotextransparency)
-
-def IncreaseIntroTextTransparencyInStoryMode():
-    global storyintrotext, storyintrotextransparency
-
-    if (storyintrotextransparency < 255):
-        storyintrotextransparency += 1
-        storyintrotext = font.render("Wednesday, the 6th of july, 2067", True, (255, 255, 255))
-        storyintrotext.set_alpha(storyintrotextransparency)
-
-
-
-def DisplayStoryIntroText():
-    screen.blit(storyintrotext, (((1280-423)/2), ((720-36)/2)))
-
+story = Story(font)
 
 
 
@@ -704,6 +681,8 @@ def move_credit_texts():
 ################################################################
 
 while game.on == True:
+    ###resetting story stuff###
+    story = Story(font)
 
     #resetting parts of the info page text which gets changed based on game mode#
     info_page_text_20 = text(400, 520, "Up Arrow - Jump", 15, (100,170,50))
@@ -800,8 +779,8 @@ while game.on == True:
 
         screen.fill((0, 0, 0, 255))
 
-        DisplayStoryIntroText()
-        IncreaseIntroTextTransparencyInStoryMode()
+        story.DisplayStoryIntroText(screen)
+        story.IncreaseIntroTextTransparencyInStoryMode(font)
         
 
 
