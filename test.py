@@ -641,18 +641,21 @@ scene1 = pygame.image.load("Assets\Story\scene1 1280x720.png")
 scenes = [scene1]
 
 storyintrotextransparency = 0
-storyintrotext = font.render("Wednesday, the 6th of july, 2067", True, (255, 255, 255, storyintrotextransparency))
+storyintrotext = font.render("Wednesday, the 6th of july, 2067", True, (255, 255, 255))
+storyintrotext.set_alpha(storyintrotextransparency)
 
 def IncreaseIntroTextTransparencyInStoryMode():
-    global storyintrotext, storyintrotext
+    global storyintrotext, storyintrotextransparency
 
     if (storyintrotextransparency < 255):
-        storyintrotextransparency += 5
-        storyintrotext = font.render("Wednesday, the 6th of july, 2067", True, (255, 255, 255, storyintrotextransparency))
-    
+        storyintrotextransparency += 1
+        storyintrotext = font.render("Wednesday, the 6th of july, 2067", True, (255, 255, 255))
+        storyintrotext.set_alpha(storyintrotextransparency)
 
 
 
+def DisplayStoryIntroText():
+    screen.blit(storyintrotext, (((1280-423)/2), ((720-36)/2)))
 
 
 
@@ -795,9 +798,10 @@ while game.on == True:
 
         button_effects()
 
-        screen.fill((255, 255, 255, 255))
+        screen.fill((0, 0, 0, 255))
 
-        
+        DisplayStoryIntroText()
+        IncreaseIntroTextTransparencyInStoryMode()
         
 
 
