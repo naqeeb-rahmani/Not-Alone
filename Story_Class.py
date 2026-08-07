@@ -5,11 +5,13 @@ pygame.init()
 
 class Story:
     def __init__(self, font):
-        self.scene1 = pygame.image.load("Assets\Story\scene1 1280x720.png")
+        self.scene0 = pygame.image.load("Assets\Story\scene1 1280x720.png")
 
-        self.scenes = [self.scene1]
+        self.scenes = [self.scene0]
 
-        self.textforscene1 = ["Finally! THE FIRST HUMANOIDS", ]
+        self.textforscene0 = ["Finally! After years of work, I made them. I made these humanoids", "It surely took me years, even almost my whole life. But at least I did it", "Now I just need to test them somehow", "I'm thinking of putting them in some sort of facility.", "That way I will be able to test their intelligence based on whether if they escape or not"]
+
+        self.textscene0 = Typewriter_Text((50, 600), (700, 650), 1, None, self.textforscene0, False)
 
         self.currentscene = 0
 

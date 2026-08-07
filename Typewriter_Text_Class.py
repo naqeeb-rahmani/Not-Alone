@@ -1,7 +1,7 @@
 import pygame
 
-BLACK = (0, 0, 0, 255)
-GREYish = (50, 50, 50, 255)
+WHITE = (255, 255, 255, 255)
+GREYish = (150, 150, 150, 255)
 
 pygame.init()
 
@@ -39,9 +39,9 @@ class Typewriter_Text:
         self.currentlength = 0
 
         if if_single_text_true_or_false:
-            self.currentdisplaytext = self.font.render(text[0:self.currentlength], True, BLACK)
+            self.currentdisplaytext = self.font.render(text[0:self.currentlength], True, WHITE)
         else:
-            self.currentdisplaytext = self.font.render(texts[self.currenttextnumber][0:self.currentlength], True, BLACK)
+            self.currentdisplaytext = self.font.render(texts[self.currenttextnumber][0:self.currentlength], True, WHITE)
 
         self.single_text = if_single_text_true_or_false
 
@@ -68,9 +68,9 @@ class Typewriter_Text:
                 self.currentlength += 1
 
             if self.single_text:
-                self.currentdisplaytext = self.font.render(self.text[0:self.currentlength], True, BLACK)
+                self.currentdisplaytext = self.font.render(self.text[0:self.currentlength], True, WHITE)
             else:
-                self.currentdisplaytext = self.font.render(self.texts[self.currenttextnumber][0:self.currentlength], True, BLACK)
+                self.currentdisplaytext = self.font.render(self.texts[self.currenttextnumber][0:self.currentlength], True, WHITE)
 
         screen.blit(self.currentdisplaytext, self.text_pos)
 

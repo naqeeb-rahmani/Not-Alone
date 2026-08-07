@@ -761,6 +761,7 @@ while game.on == True:
                 exit()
 
     while game.mode == "story":
+        starttime = pygame.time.get_ticks()
 
         button_effects()
 
@@ -771,9 +772,14 @@ while game.on == True:
             story.DisplayStoryIntroText(screen)
             story.IncreaseIntroTextTransparencyInStoryMode(font)
 
-        if(story.intro != True):
+        if(story.intro == False):
             screen.blit(story.scenes[story.currentscene], (0, 0))
-            
+
+           
+
+            if story.currentscene == 0:
+                    story.textscene0.DrawAndUpdate(screen, deltatime)
+
 
 
         
@@ -786,6 +792,9 @@ while game.on == True:
         
 
         for event in pygame.event.get():
+            if story.intro == False:
+                if story.currentscene == 0:
+                    story.textscene0.NextText(event)
 
             if(story.intro):
                 story.ContinueFromIntro(event)
@@ -804,6 +813,8 @@ while game.on == True:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+        
+        deltatime = pygame.time.get_ticks() - starttime
 
     while game.mode == "online: host or join":
 
