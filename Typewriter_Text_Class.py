@@ -15,6 +15,8 @@ class Typewriter_Text:
         self.text = text
         self.texts = texts
 
+        self.fullydisplayedtexts = False #used when passing in a list of texts
+
         self.fontsize = 24        
         self.font = pygame.font.Font("Assets\Font\Grand9K Pixel.ttf", self.fontsize)
 
@@ -76,6 +78,10 @@ class Typewriter_Text:
             self.fullydisplayedtext = True
             if self.currenttextnumber < (len(self.texts)-1):
                 screen.blit(self.next_text_text, self.next_text_text_pos)
+
+        if self.currenttextnumber == (len(self.texts)-1):
+            if self.FullyDisplayedText():
+                self.fullydisplayedtexts = True
             
 
     def NextText(self, event): #used when having a list of texts

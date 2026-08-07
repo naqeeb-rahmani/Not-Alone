@@ -615,7 +615,6 @@ online_host_button = menu_button(530, 220, host_button_sprite, host_button_press
 
 online_join_button = menu_button(530, 370, join_button_sprite, join_button_pressed_sprite)
 
-
 online_buttons = [online_host_button, online_join_button]
 
 menu_buttons = [menu_story_button, menu_play_button, menu_online_button, menu_credits_button]
@@ -623,19 +622,16 @@ menu_buttons = [menu_story_button, menu_play_button, menu_online_button, menu_cr
 #all buttons
 buttons = [to_menu_button, info_button, menu_play_button, menu_credits_button, online_host_button, online_join_button]
 
+
+
 #story
+
+
 story = Story(font)
 
 
 
-
-
-
-
-
 ########################################
-
-
 
 
 
@@ -777,6 +773,8 @@ while game.on == True:
 
         if(story.intro != True):
             screen.blit(story.scenes[story.currentscene], (0, 0))
+            
+
 
         
         for b in ui_buttons_while_game_end_and_credits:

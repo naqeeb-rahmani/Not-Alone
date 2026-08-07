@@ -1,4 +1,5 @@
 import pygame
+from Typewriter_Text_Class import *
 
 pygame.init()
 
@@ -7,6 +8,8 @@ class Story:
         self.scene1 = pygame.image.load("Assets\Story\scene1 1280x720.png")
 
         self.scenes = [self.scene1]
+
+        self.textforscene1 = ["Finally! THE FIRST HUMANOIDS", ]
 
         self.currentscene = 0
 
