@@ -778,6 +778,7 @@ while game.on == True:
            
 
             if story.currentscene == 0:
+                    screen.blit(story.doctortext, (50, 500))
                     story.textscene0.DrawAndUpdate(screen, deltatime)
 
 

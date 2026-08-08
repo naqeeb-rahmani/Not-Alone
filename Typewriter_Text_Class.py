@@ -6,8 +6,8 @@ GREYish = (150, 150, 150, 255)
 pygame.init()
 
 font = pygame.font.Font("Assets\Font\Grand9K Pixel.ttf", 24)
-#storyintrotext = font.render("Wednesday, the 6th of july, 2067", True, (255, 255, 255, 255))
-#print(font.size("Wednesday, the 6th of july, 2067")) width = 423; height = 36
+
+#print(font.size("Saturday, the 1st of January, 2067")) WIDTH = 459p; HEIGHT = 36p
 
 class Typewriter_Text:
     def __init__(self, text_pos, instruction_text_for_pressing_enter_pos, speed_per_second,text, texts, if_single_text_true_or_false):
