@@ -781,8 +781,18 @@ while game.on == True:
                     screen.blit(story.doctortext, (50, 500))
                     story.textscene0.DrawAndUpdate(screen, deltatime)
 
+                    story.Fade(screen)
+                    if story.halffadecomplete == True:
+                        story.currentscene += 1
+
                     if story.textscene0.fullydisplayedtexts:
                         screen.blit(story.nextscenetext, (900, 670))
+
+            if story.currentscene == 1:
+                screen.blit(story.doctortext, (50, 500))
+
+                story.Fade(screen)
+
 
 
 
@@ -802,10 +812,12 @@ while game.on == True:
 
             if(story.intro):
                 story.ContinueFromIntro(event)
+
             else:
+
                 if story.currentscene == 0 and story.textscene0.fullydisplayedtexts == True:
                     if event.key == pygame.K_RETURN:
-                        story.currentscene = 1
+                        story.nextscene = True
                         
 
 

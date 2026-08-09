@@ -8,12 +8,15 @@ class Story:
         self.scene0 = pygame.image.load("Assets\Story\scene1 1280x720.png")
         self.scene1 = pygame.image.load("Assets\Story\scene2 1280x720.png")
 
-        self.scenes = [self.scene0, self.scene0]
+        self.scenes = [self.scene0, self.scene1]
 
         self.nextscenetext = font.render("Press enter to continue...", True, (150, 150, 150))
 
+        self.nextscene = False
 
         self.fadesurface = pygame.Surface((1280, 720)); self.fadesurface.set_alpha(0)
+        self.fadeopacity = 0
+        self.halffadecomplete = False
 
 
         self.textforscene0 = ["Finally! After years of work I made them, I did it!",
@@ -46,9 +49,21 @@ class Story:
             self.storyintrotext.set_alpha(self.storyintrotextransparency)
 
     def Fade(self, screen):
-        screen.blit(self.fadesurface, (0, 0))
+        if self.nextscene:
 
-        #if self.fadesurface()
+            screen.blit(self.fadesurface, (0, 0))
+            
+            if self.fadeopacity < 255 and self.halffadecomplete == False:
+                self.fadeopacity += 5
+                if self.fadeopacity == 255:
+                    self.halffadecomplete = True
+            elif self.halffadecomplete == True:
+                if self.fadeopacity > 0:
+                    self.fadeopacity -= 5
+
+            self.fadesurface.set_alpha(self.fadeopacity)
+
+        
 
 
     def DisplayStoryIntroText(self, screen):
