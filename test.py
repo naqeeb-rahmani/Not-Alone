@@ -781,6 +781,9 @@ while game.on == True:
                     screen.blit(story.doctortext, (50, 500))
                     story.textscene0.DrawAndUpdate(screen, deltatime)
 
+                    if story.textscene0.fullydisplayedtexts:
+                        screen.blit(story.nextscenetext, (900, 670))
+
 
 
         
@@ -799,6 +802,12 @@ while game.on == True:
 
             if(story.intro):
                 story.ContinueFromIntro(event)
+            else:
+                if story.currentscene == 0 and story.textscene0.fullydisplayedtexts == True:
+                    if event.key == pygame.K_RETURN:
+                        story.currentscene = 1
+                        
+
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if pygame.mouse.get_pressed()[0]:

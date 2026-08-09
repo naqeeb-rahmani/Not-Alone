@@ -15,6 +15,8 @@ class Typewriter_Text:
         self.text = text
         self.texts = texts
 
+        self.typewritersfx = pygame.mixer.Sound(r"Assets\Audio\SoundEffects\typewriter effect.mp3"); self.typewritersfx.set_volume(0.5)
+
         self.fullydisplayedtexts = False #used when passing in a list of texts
 
         self.fontsize = 24        
@@ -24,7 +26,7 @@ class Typewriter_Text:
 
         self.next_text_text_pos = instruction_text_for_pressing_enter_pos
 
-        self.next_text_text = self.font.render("Press Enter to Continue...", True, GREYish)
+        self.next_text_text = self.font.render("Press Enter to continue...", True, GREYish)
 
         self.timer = 0 #time in seconds
 
@@ -62,6 +64,9 @@ class Typewriter_Text:
     def DrawAndUpdate(self, screen, deltatime):
         self.timer += deltatime
 
+        if self.currentlength == 0:
+            self.typewritersfx.play()
+
         if self.timer >= (60/self.speed_per_second):
             self.timer = 0
             if(self.GetLengthOfDisplayedText() < self.totallength):
@@ -82,6 +87,9 @@ class Typewriter_Text:
         if self.currenttextnumber == (len(self.texts)-1):
             if self.FullyDisplayedText():
                 self.fullydisplayedtexts = True
+
+        if self.FullyDisplayedText():
+            self.typewritersfx.stop()
             
 
     def NextText(self, event): #used when having a list of texts

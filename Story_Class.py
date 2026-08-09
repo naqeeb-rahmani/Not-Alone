@@ -6,10 +6,22 @@ pygame.init()
 class Story:
     def __init__(self, font):
         self.scene0 = pygame.image.load("Assets\Story\scene1 1280x720.png")
+        self.scene1 = pygame.image.load("Assets\Story\scene2 1280x720.png")
 
-        self.scenes = [self.scene0]
+        self.scenes = [self.scene0, self.scene0]
 
-        self.textforscene0 = ["Finally! After years of work, I made them. I made these humanoids", "It surely took me years, even almost my whole life. But at least I did it", "Now I just need to test them somehow", "I'm thinking of putting them in some sort of facility.", "That way I will be able to test their intelligence based on whether if they escape or not"]
+        self.nextscenetext = font.render("Press enter to continue...", True, (150, 150, 150))
+
+
+        self.fadesurface = pygame.Surface((1280, 720)); self.fadesurface.set_alpha(0)
+
+
+        self.textforscene0 = ["Finally! After years of work I made them, I did it!",
+                              "I made the first humanoids, not just one but two of them",
+                              "Now, I just have to test their intelligence somehow.", 
+                              "I can finally use the underground facility which i built for this day."]
+        
+        self.textforcene1 = []
 
         self.textscene0 = Typewriter_Text((50, 550), (900, 670), 1, None, self.textforscene0, False)
         self.doctortext = font.render("Doctor:", True, (200, 200, 200))
@@ -33,6 +45,10 @@ class Story:
             self.storyintrotext = font.render("Saturday, the 1st of January, 2067", True, (255, 255, 255))
             self.storyintrotext.set_alpha(self.storyintrotextransparency)
 
+    def Fade(self, screen):
+        screen.blit(self.fadesurface, (0, 0))
+
+        #if self.fadesurface()
 
 
     def DisplayStoryIntroText(self, screen):
