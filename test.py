@@ -778,20 +778,29 @@ while game.on == True:
            
 
             if story.currentscene == 0:
-                    screen.blit(story.doctortext, (50, 500))
-                    story.textscene0.DrawAndUpdate(screen, deltatime)
+                screen.blit(story.doctortext, (50, 500))
+                story.textscene0.DrawAndUpdate(screen, deltatime)
 
-                    story.Fade(screen)
-                    if story.halffadecomplete == True:
-                        story.currentscene += 1
+                story.Fade(screen)
 
-                    if story.textscene0.fullydisplayedtexts:
-                        screen.blit(story.nextscenetext, (900, 670))
+                if story.textscene0.fullydisplayedtexts:
+                    screen.blit(story.nextscenetext, (900, 670))
 
             if story.currentscene == 1:
                 screen.blit(story.doctortext, (50, 500))
+                story.textscene1.DrawAndUpdate(screen, deltatime)
 
                 story.Fade(screen)
+                
+                if story.textscene1.fullydisplayedtexts:
+                    screen.blit(story.nextscenetext, (900, 670))
+
+            if story.currentscene == 2:
+                screen.blit(story.doctortext, (50, 500))
+                story.textscene2.DrawAndUpdate(screen, deltatime)
+
+                if story.textscene2.fullydisplayedtexts:
+                    screen.blit(story.backtomenutext, (850, 670))
 
 
 
@@ -807,17 +816,31 @@ while game.on == True:
 
         for event in pygame.event.get():
             if story.intro == False:
+
                 if story.currentscene == 0:
                     story.textscene0.NextText(event)
+                elif story.currentscene == 1:
+                    story.textscene1.NextText(event)
+                
 
             if(story.intro):
                 story.ContinueFromIntro(event)
 
             else:
 
-                if story.currentscene == 0 and story.textscene0.fullydisplayedtexts == True:
-                    if event.key == pygame.K_RETURN:
-                        story.nextscene = True
+                if event.type == pygame.KEYDOWN:
+
+                    if story.currentscene == 0 and story.textscene0.fullydisplayedtexts == True:
+                        if event.key == pygame.K_RETURN:
+                            story.nextscene = True
+                    
+                    elif story.currentscene == 1 and story.textscene1.fullydisplayedtexts == True:
+                        if event.key == pygame.K_RETURN:
+                            story.nextscene = True
+                    
+                    elif story.currentscene == 2 and story.textscene2.fullydisplayedtexts == True:
+                        if event.key == pygame.K_RETURN:
+                            game.mode = "menu"
                         
 
 
