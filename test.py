@@ -623,16 +623,11 @@ menu_buttons = [menu_story_button, menu_play_button, menu_online_button, menu_cr
 buttons = [to_menu_button, info_button, menu_play_button, menu_credits_button, online_host_button, online_join_button]
 
 
-
 #story
-
 
 story = Story(font)
 
-
-
 ########################################
-
 
 
 #credits
@@ -830,21 +825,29 @@ while game.on == True:
 
                 if event.type == pygame.KEYDOWN:
 
+                    if event.key == pygame.K_RETURN:
+
+                        if story.currentscene == 0 and story.textscene0.fullydisplayedtexts == True:
+                            story.nextscene = True
+                        elif story.currentscene == 1 and story.textscene1.fullydisplayedtexts == True:
+                            story.nextscene = True
+                        elif story.currentscene == 2 and story.textscene2.fullydisplayedtexts == True:
+                            game.mode = "menu"        
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
                     if story.currentscene == 0 and story.textscene0.fullydisplayedtexts == True:
-                        if event.key == pygame.K_RETURN:
-                            story.nextscene = True
-                    
+                        story.nextscene = True
                     elif story.currentscene == 1 and story.textscene1.fullydisplayedtexts == True:
-                        if event.key == pygame.K_RETURN:
-                            story.nextscene = True
-                    
+                        story.nextscene = True
                     elif story.currentscene == 2 and story.textscene2.fullydisplayedtexts == True:
-                        if event.key == pygame.K_RETURN:
-                            game.mode = "menu"
-                        
+                        game.mode = "menu"  
+                    
+
 
 
             if event.type == pygame.MOUSEBUTTONDOWN:
+
                 if pygame.mouse.get_pressed()[0]:
                     for b in ui_buttons_while_game_end_and_credits:
                         b.update_sprite()

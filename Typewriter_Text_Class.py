@@ -95,13 +95,13 @@ class Typewriter_Text:
     def NextText(self, event): #used when having a list of texts
         
         if self.GetLengthOfCurrentText() == self.totallength:
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    if self.currenttextnumber < (len(self.texts)-1):
-                        self.currenttextnumber+=1
-                        self.currentlength = 0
-                        self.totallength = len(self.texts[self.currenttextnumber])
-                        self.fullydisplayedtext = False
+            if (event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN) or (event.type == pygame.MOUSEBUTTONDOWN):
+                
+                if self.currenttextnumber < (len(self.texts)-1):
+                    self.currenttextnumber+=1
+                    self.currentlength = 0
+                    self.totallength = len(self.texts[self.currenttextnumber])
+                    self.fullydisplayedtext = False
 
 
 

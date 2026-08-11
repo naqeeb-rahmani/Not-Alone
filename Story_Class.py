@@ -26,7 +26,7 @@ class Story:
         self.textforscene0 = ["Finally! After years of work, I made them",
                               "I made the first humanoids, not just one but two of them",
                               "What a good start to this year", 
-                              "I will finally be able to use the underground facility that I spent years on"]
+                              "I will finally be able to use the underground facility which I spent years on"]
 
         self.textscene0 = Typewriter_Text((50, 550), (900, 670), 1, None, self.textforscene0, False)
         
@@ -93,8 +93,8 @@ class Story:
 
     def ContinueFromIntro(self, event):
         if(self.storyintrotextransparency >=255):
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    self.intro = False
-                    pygame.mixer.Sound.play(self.spotlightsfx)
+            if (event.type == pygame.KEYDOWN and event.key == pygame.K_RETURN) or (event.type == pygame.MOUSEBUTTONDOWN):
+                
+                self.intro = False
+                pygame.mixer.Sound.play(self.spotlightsfx)
         
