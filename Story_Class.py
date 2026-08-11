@@ -24,17 +24,17 @@ class Story:
         self.doctortext = font.render("Doctor:", True, (200, 200, 200))
 
         self.textforscene0 = ["Finally! After years of work, I made them",
-                              "I made the first humanoids, not just one but two of them",
-                              "What a good start to this year", 
-                              "I will finally be able to use the underground facility which I spent years on"]
+                              "I made the first humanoids, not just one, but two of them",
+                              "What a great start to the year", 
+                              "I will finally be able to use the underground facility that I spent years on"]
 
         self.textscene0 = Typewriter_Text((50, 550), (900, 670), 1, None, self.textforscene0, False)
         
-        self.textforscene1 = ["Time to take them to the facility so i can test their intelligence"]
+        self.textforscene1 = ["Time to take them to the facility so I can test their intelligence"]
 
         self.textscene1 = Typewriter_Text((50, 550), (900, 670), 1, None, self.textforscene1, False)
 
-        self.textforscene2 = ["Now, I will just leave them here and see if whether they are able to escape or not"]
+        self.textforscene2 = ["Now, I will just leave them here and see whether they are able to escape or not"]
 
         self.textscene2 = Typewriter_Text((50, 550), (900, 670), 1, None, self.textforscene2, False)
 
