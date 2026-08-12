@@ -753,7 +753,7 @@ while game.on == True:
 
             if event.type == pygame.QUIT:
                 pygame.quit()
-                sys.sys.exit()
+                sys.exit()
 
     while game.mode == "story":
         starttime = pygame.time.get_ticks()
