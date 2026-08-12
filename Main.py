@@ -1,4 +1,4 @@
-import pygame, json, socket, threading
+import pygame, json, socket, threading, sys
 from Player_Class import *
 from Platform_Class import *
 from Pressure_Plates_Class import *
@@ -753,7 +753,7 @@ while game.on == True:
 
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.sys.exit()
 
     while game.mode == "story":
         starttime = pygame.time.get_ticks()
@@ -860,7 +860,7 @@ while game.on == True:
 
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.sys.exit()
         
         deltatime = pygame.time.get_ticks() - starttime
 
@@ -904,7 +904,7 @@ while game.on == True:
 
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.sys.exit()
 
     while game.mode == "online: join - write ip":
         screen.fill((255,255,255))
@@ -940,7 +940,7 @@ while game.on == True:
 
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.sys.exit()
 
     while game.mode == "online: host":
 
@@ -1118,7 +1118,7 @@ while game.on == True:
 
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.sys.exit()
         
         deltatime = (pygame.time.get_ticks() / 1000) - starttime
 
@@ -1271,7 +1271,7 @@ while game.on == True:
 
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.sys.exit()
 
         deltatime = (pygame.time.get_ticks() / 1000) - starttime
 
@@ -1468,7 +1468,7 @@ while game.on == True:
 
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.sys.exit()
 
 
     while game.mode == "game: end":
@@ -1509,7 +1509,7 @@ while game.on == True:
 
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.sys.exit()
 
 
     while game.mode == "game: experiment failed":
@@ -1556,7 +1556,7 @@ while game.on == True:
 
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.sys.exit()
 
     while game.mode == "credits":
             
@@ -1591,4 +1591,4 @@ while game.on == True:
 
             if event.type == pygame.QUIT:
                 pygame.quit()
-                exit()
+                sys.exit()
