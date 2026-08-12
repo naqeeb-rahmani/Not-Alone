@@ -615,7 +615,6 @@ online_host_button = menu_button(530, 220, host_button_sprite, host_button_press
 
 online_join_button = menu_button(530, 370, join_button_sprite, join_button_pressed_sprite)
 
-
 online_buttons = [online_host_button, online_join_button]
 
 menu_buttons = [menu_story_button, menu_play_button, menu_online_button, menu_credits_button]
@@ -623,20 +622,12 @@ menu_buttons = [menu_story_button, menu_play_button, menu_online_button, menu_cr
 #all buttons
 buttons = [to_menu_button, info_button, menu_play_button, menu_credits_button, online_host_button, online_join_button]
 
+
 #story
+
 story = Story(font)
 
-
-
-
-
-
-
-
 ########################################
-
-
-
 
 
 #credits
@@ -765,6 +756,7 @@ while game.on == True:
                 exit()
 
     while game.mode == "story":
+        starttime = pygame.time.get_ticks()
 
         button_effects()
 
@@ -775,8 +767,38 @@ while game.on == True:
             story.DisplayStoryIntroText(screen)
             story.IncreaseIntroTextTransparencyInStoryMode(font)
 
-        if(story.intro != True):
+        if(story.intro == False):
             screen.blit(story.scenes[story.currentscene], (0, 0))
+
+           
+
+            if story.currentscene == 0:
+                screen.blit(story.doctortext, (50, 500))
+                story.textscene0.DrawAndUpdate(screen, deltatime)
+
+                story.Fade(screen)
+
+                if story.textscene0.fullydisplayedtexts:
+                    screen.blit(story.nextscenetext, (900, 670))
+
+            if story.currentscene == 1:
+                screen.blit(story.doctortext, (50, 500))
+                story.textscene1.DrawAndUpdate(screen, deltatime)
+
+                story.Fade(screen)
+                
+                if story.textscene1.fullydisplayedtexts:
+                    screen.blit(story.nextscenetext, (900, 670))
+
+            if story.currentscene == 2:
+                screen.blit(story.doctortext, (50, 500))
+                story.textscene2.DrawAndUpdate(screen, deltatime)
+
+                if story.textscene2.fullydisplayedtexts:
+                    screen.blit(story.backtomenutext, (850, 670))
+
+
+
 
         
         for b in ui_buttons_while_game_end_and_credits:
@@ -788,11 +810,44 @@ while game.on == True:
         
 
         for event in pygame.event.get():
+            if story.intro == False:
+
+                if story.currentscene == 0:
+                    story.textscene0.NextText(event)
+                elif story.currentscene == 1:
+                    story.textscene1.NextText(event)
+                
 
             if(story.intro):
                 story.ContinueFromIntro(event)
 
+            else:
+
+                if event.type == pygame.KEYDOWN:
+
+                    if event.key == pygame.K_RETURN:
+
+                        if story.currentscene == 0 and story.textscene0.fullydisplayedtexts == True:
+                            story.nextscene = True
+                        elif story.currentscene == 1 and story.textscene1.fullydisplayedtexts == True:
+                            story.nextscene = True
+                        elif story.currentscene == 2 and story.textscene2.fullydisplayedtexts == True:
+                            game.mode = "menu"        
+
+                if event.type == pygame.MOUSEBUTTONDOWN:
+
+                    if story.currentscene == 0 and story.textscene0.fullydisplayedtexts == True:
+                        story.nextscene = True
+                    elif story.currentscene == 1 and story.textscene1.fullydisplayedtexts == True:
+                        story.nextscene = True
+                    elif story.currentscene == 2 and story.textscene2.fullydisplayedtexts == True:
+                        game.mode = "menu"  
+                    
+
+
+
             if event.type == pygame.MOUSEBUTTONDOWN:
+
                 if pygame.mouse.get_pressed()[0]:
                     for b in ui_buttons_while_game_end_and_credits:
                         b.update_sprite()
@@ -806,6 +861,8 @@ while game.on == True:
             if event.type == pygame.QUIT:
                 pygame.quit()
                 exit()
+        
+        deltatime = pygame.time.get_ticks() - starttime
 
     while game.mode == "online: host or join":
 
