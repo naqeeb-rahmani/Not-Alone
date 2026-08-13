@@ -10,6 +10,30 @@ Not Alone, But Together is a 2d platformer featuring same device/network co-op g
 - Story mode with a short visual novel  
 <br>
 
+## Controls (also available in-game)
+### Player 1 (Purple) - The host in online 
+<img width="97" height="135" alt="image" src="https://github.com/user-attachments/assets/642d3285-03da-4fcf-bb4b-5d9b24119da9" align="right"/>   
+
+- Same controls in both online and offline
+- W - Jump
+- A - Left 
+- D - Right
+- E - Interact (with levers)
+
+### Player 2 (Green)
+<img width="97" height="135" alt="image" src="https://github.com/user-attachments/assets/86784fdf-7586-4628-9621-63bb77f57d5b" align="right"/>   
+
+### Online: 
+- W - Jump
+- A - Left
+- D - Right
+### Offline:
+- Up arrow - Jump
+- Left arrow - Left
+- Right arrow - Right
+
+<br>
+
 ## Credits
 - Available in-game
 <br>
@@ -22,7 +46,7 @@ Not Alone, But Together is a 2d platformer featuring same device/network co-op g
 
 ## Prerequisites
 ### For playing the game:
-- None
+- None. you just need to copy this repository and run the available executable.
 
 ### For making modifications:
 - Python (I used version 3.13.7)
