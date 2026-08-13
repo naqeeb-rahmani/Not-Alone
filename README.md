@@ -45,12 +45,22 @@ Not Alone, But Together is a 2d platformer featuring same device/network co-op g
 <br>
 
 ## Installation
-### Github version (source code included) through cmd:
+### Github version through cmd (with source code):
  ```
 git clone https://github.com/naqeeb-rahmani/Not-Alone
 cd Not-Alone
 NotAlone.exe
- ``` 
+ ```
+
+### Itch.io version through a web browser (without source code):
+1. Navigate to the game's [itch.io page](https://naqe3b.itch.io/not-alone-but-together) <img width="252" height="71" alt="Skärmbild 2026-08-13 185920" src="https://github.com/user-attachments/assets/e268c5dc-cb1a-41fc-ac09-4ff5a2255eab" align="right"/>
+2. Scroll down and click on "Download"
+3. Then navigate to the Downloads directory in the file explorer
+4. Select the folder named "Not Alone.zip"
+5. Click on "Extract all"
+6. Open the folder that just got created and there you will see the executable
+7. Run the executable
+  
 
 ## Prerequisites
 ### For playing the game:
