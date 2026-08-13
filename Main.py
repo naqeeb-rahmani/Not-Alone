@@ -665,7 +665,9 @@ def move_credit_texts():
 while game.on == True:
     ###resetting story stuff###
     story = Story(font)
-
+    (story.textscene0.typewritersfx).stop()
+    (story.textscene1.typewritersfx).stop()
+    (story.textscene2.typewritersfx).stop()
     #resetting parts of the info page text which gets changed based on game mode#
     info_page_text_20 = text(400, 520, "Up Arrow - Jump", 15, (100,170,50))
     info_page_text_21 = text(400, 550, "Left Arrow - Left", 15, (100,170,50))
@@ -728,6 +730,7 @@ while game.on == True:
     ###################################################################################
 
     while game.mode == "menu":
+        pygame.mixer.stop()
 
         screen.blit(menu_bg, (0,0))
 
