@@ -3,7 +3,7 @@
 # Not Alone, But Together 
 Not Alone, But Together is a 2d platformer featuring same device/network co-op gameplay. In this game you and your friend play as 2 humanoids trying to escape a facility, where you will have to cooperate and try different lever/pressure plate combinations to open passages.
 
-[Want to play the game directly?](https://github.com/naqeeb-rahmani/Not-Alone/edit/main/README.md#Installation)
+[Want to play the game directly?](https://github.com/naqeeb-rahmani/Not-Alone/tree/main#installation)
 <br>
 
 ## Features
