@@ -44,6 +44,14 @@ Not Alone, But Together is a 2d platformer featuring same device/network co-op g
 - Used as last resort
 <br>
 
+## Installation
+### Github version (source code included) through cmd:
+ ```
+git clone https://github.com/naqeeb-rahmani/Not-Alone
+cd Not-Alone
+NotAlone.exe
+ ``` 
+
 ## Prerequisites
 ### For playing the game:
 - None. you just need to copy this repository and run the available executable.
