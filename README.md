@@ -66,7 +66,7 @@ NotAlone.exe
 
 ## Prerequisites
 ### For playing the game:
-- None. you just need to copy this repository and run the available executable.
+- None
 
 ### For making modifications:
 - Python (I used version 3.13.7)
