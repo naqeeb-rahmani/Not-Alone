@@ -60,7 +60,7 @@ NotAlone.exe
 3. Then navigate to the Downloads directory in the file explorer
 4. Select the folder named "Not Alone.zip"
 5. Click on "Extract all"
-6. Open the folder that just got created and there you will see the executable
+6. Open the folder that just got created and open the folder in it
 7. Run the executable
   
 
