@@ -645,7 +645,7 @@ credit_text_5 = text(450, 570, "ZeggyGames (Character Templates)", 20, (150,20,1
 credit_text_6 = text(450, 620, "TotusLotus (Coins and Buttons)", 20, (150,20,150))
 credit_text_7 = text(450, 670, "Grand Chaos (Font) - CC-BY-SA 3.0", 20, (150,20,150))
 credit_text_8 = text(450, 720, "Cat_Sopelka (Brick Background)", 20, (150,20,150))
-credit_text_9 = text(440, 770, "Naqeeb (Modifications and Levers)", 20, (150,20,150))
+credit_text_9 = text(420, 770, "Naqeeb (Modifications, Story and Levers)", 20, (150,20,150))
 
 credit_text_10 = text(570, 830, "Audio:", 25, (100,170,50))
 
